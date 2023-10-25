@@ -30,6 +30,6 @@ NEXT_PUBLIC_W3UP_SERVICE_DID=did:your-service-did
 
 An example `.env.local` file can be found in `.env.tpl`.
 
-If you are using `w3infra`, the service URL will be displayed as the "upload API service URL" once `npm start` has successfully set up your development environment.
+If you are using `w3infra`, the service URL will be displayed as the `UploadApiStack`'s `ApiEndpoint` output once `npm start` has successfully set up your development environment.
 
 <p style="text-align:center;padding-top:2rem">⁂</p>
