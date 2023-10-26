@@ -11,6 +11,9 @@ interface PageProps {
 
 export default function ItemPage ({ params: { cid }}: PageProps): JSX.Element {
   const [{ data }] = useUploadsList()
+  if (data.length === 0) {
+    return <div></div>
+  }
   const item = data?.find(x => x.root.toString() === cid)
   if (!item) {
     return <h1>Not Found</h1>
