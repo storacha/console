@@ -44,15 +44,10 @@ export async function toDelegation(car: Blob): Promise<Delegation> {
   return importDAG(blocks)
 }
 
-export function SpaceShare({
-  viewSpace,
-}: {
-  viewSpace: (did: DIDKey) => void
-}): JSX.Element {
-  const [{ agent }, { createDelegation }] = useKeyring()
+export function ShareSpace (): JSX.Element {
+  const [{ createDelegation }] = useKeyring()
   const [value, setValue] = useState('')
   const [downloadUrl, setDownloadUrl] = useState('')
-  const [proof, setProof] = useState<Delegation>()
 
   async function makeDownloadLink(input: string): Promise<void> {
     let audience
@@ -123,15 +118,15 @@ export function SpaceShare({
           </a>
         </form>
       </div>
-      <div className='mt-16 py-16 border-t border-gray-700'>
-        <H2>Import a space</H2>
-        <ImportSpace />
-      </div>
     </div>
   )
 }
 
-export function ImportSpace () {
+export function ImportSpace ({
+  viewSpace,
+}: {
+  viewSpace: (did: DIDKey) => void
+}) {
   const [{ agent }, { addSpace }] = useKeyring()
   const [proof, setProof] = useState<Delegation>()
 

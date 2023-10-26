@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useKeyring } from '@w3ui/react-keyring';
 import { useUploadsList } from '@w3ui/react-uploads-list';
-import { SpaceShare } from '@/share';
+import { ShareSpace } from '@/share';
 import { Uploader } from './Uploader';
 import { UploadsList } from './UploadsList';
 import { SpaceRegistrar } from './SpaceRegistrar';
@@ -30,7 +30,7 @@ export function SpaceSection (props: SpaceSectionProps): JSX.Element {
   return (
     <div>
       <div className='container mx-auto'>
-        {share && <SpaceShare viewSpace={viewSpace} />}
+        {share && <ShareSpace viewSpace={viewSpace} />}
         {(space && !registered) && !share && <SpaceRegistrar />}
         {!space && (
           <div className="text-center">

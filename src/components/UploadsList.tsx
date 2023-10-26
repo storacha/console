@@ -37,7 +37,7 @@ function Uploads ({ uploads, loading }: UploadsProps): JSX.Element {
               {uploads.map(({ root }) => (
                 <tr key={root.toString()}>
                   <td className="p-2 pl-3 font-mono text-sm overflow-hidden no-wrap text-ellipsis">
-                    <Link href={`${pathname}/root/${root.toString()}`}>
+                    <Link href={`${pathname}/root/${root.toString()}`} className='hover:text-blue-400'>
                       {root.toString()}
                     </Link>
                   </td>
