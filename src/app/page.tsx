@@ -16,7 +16,7 @@ export default function SpacePage (): JSX.Element {
     <>
       <SpacesNav />
       <div className='max-w-lg mt-8'>
-        { spaces.map(s => <Item space={s} /> ) }
+        { spaces.map(s => <Item space={s} key={s.did()} /> ) }
       </div>
     </>
   )

@@ -28,7 +28,7 @@ export default function ItemPage ({ params: { cid }}: PageProps): JSX.Element {
       </div>
       <H2>Shards</H2>
       <div className=''>
-         { item.shards?.map(link => <Shard cid={link.toString()} />) }
+         { item.shards?.map(link => <Shard cid={link.toString()} key={link.toString()} />) }
       </div>
     </div>
   )
