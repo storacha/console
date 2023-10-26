@@ -3,6 +3,8 @@ import { H2 } from '@/components/Text'
 import Link from 'next/link'
 import { Nav, NavLink } from '@/components/Nav'
 
+export const runtime = 'edge'
+
 interface LayoutProps extends PropsWithChildren {
   params: {
     did: string
@@ -16,6 +18,8 @@ export default function Layout ({children}: LayoutProps): JSX.Element {
     </section>
   )
 }
+
+
 
 export function SpacesNav () {
   return (
