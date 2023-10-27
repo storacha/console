@@ -18,7 +18,7 @@ export default function CreateSpacePage (): JSX.Element {
           A space is decentralised bucket. The name you give it is a memorable alias.
         </p>
         <p>
-          It's true name is a unique DID derived from a key-pair.
+          It&apos;s true name is a unique DID derived from a key-pair.
         </p>
         <p className="mt-4">
           Console, your agent, creates a UCAN delegating all capabilities on that space to your email DID.
