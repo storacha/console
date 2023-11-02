@@ -15,12 +15,9 @@ jobs:
       - test
     runs-on: ubuntu-latest
     environment:
-      name: "${{ format('preview-{0}', github.ref_name) }}"
+      name: ${{ (github.ref_name != "main") && format('preview-{0}', github.ref_name) || "staging" }}
       url: ${{ steps.cloudflare_url.outputs.stdout }}
     steps:
-      - id: environment_name
-        run: echo "preview-$GITHUB_REF_NAME"
-
       - uses: actions/checkout@v3
       - uses: ./.github/actions/pnpm
       - run: pnpm pages:build
