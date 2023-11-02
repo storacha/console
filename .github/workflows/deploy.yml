@@ -15,7 +15,7 @@ jobs:
       - test
     runs-on: ubuntu-latest
     environment:
-      name: ${{ steps.environment_name.outputs.stdout }}
+      name: "${{ format('preview-{0}', github.ref_name) }}"
       url: ${{ steps.cloudflare_url.outputs.stdout }}
     steps:
       - id: environment_name
