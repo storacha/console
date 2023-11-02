@@ -15,9 +15,12 @@ jobs:
       - test
     runs-on: ubuntu-latest
     environment:
-      name: preview-$GITHUB_REF_NAME
+      name: ${{ steps.environment_name.outputs.stdout }}
       url: ${{ steps.cloudflare_url.outputs.stdout }}
     steps:
+      - id: environment_name
+        run: echo "preview-$GITHUB_REF_NAME"
+
       - uses: actions/checkout@v3
       - uses: ./.github/actions/pnpm
       - run: pnpm pages:build
