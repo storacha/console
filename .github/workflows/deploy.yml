@@ -15,7 +15,7 @@ jobs:
       - test
     runs-on: ubuntu-latest
     environment:
-      name: preview-${{GITHUB_REF_NAME}}
+      name: preview-$GITHUB_REF_NAME
       url: ${{ steps.cloudflare_url.outputs.stdout }}
     steps:
       - uses: actions/checkout@v3
