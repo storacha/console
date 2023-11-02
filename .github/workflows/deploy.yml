@@ -15,7 +15,7 @@ jobs:
       - test
     runs-on: ubuntu-latest
     environment:
-      name: ${{ (github.ref_name != 'main') && format('preview-{0}', github.ref_name) || "staging" }}
+      name: ${{ (github.ref_name == 'main') && 'staging' || format('preview-{0}', github.ref_name) }}
       url: ${{ steps.cloudflare_url.outputs.stdout }}
     steps:
       - uses: actions/checkout@v3
