@@ -31,7 +31,6 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
   }
 
   if ((error?.name === 'PlanNotFound') || (plan && !plan.product)){
-    console.log("REDNERING")
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <div className="text-gray-200 text-center">

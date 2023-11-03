@@ -6,7 +6,6 @@ import {
 } from '@w3ui/react-keyring'
 import { serviceName, tosUrl, Logo } from '../brand'
 import Loader from './Loader'
-import { useEffect } from 'react'
 
 export function AuthenticationForm (): JSX.Element {
   const [{ submitted }] = useAuthenticator()
@@ -66,9 +65,6 @@ export function AuthenticationEnsurer ({
 }: {
   children: JSX.Element | JSX.Element[]
 }): JSX.Element {
-  useEffect(() => {
-    console.log("AUTH ENSURER")
-  }, [])
   const [{ submitted, account, agent }] = useAuthenticator()
   const authenticated = !!account
   if (authenticated) {
