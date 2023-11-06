@@ -30,7 +30,7 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
     return <DefaultLoader className='w-12 h-12 text-white' />
   }
 
-  if ((error?.name === 'PlanNotFound') || (plan && !plan.product)){
+  if (!plan?.product) {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <div className="text-gray-200 text-center">
@@ -50,4 +50,12 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
   }
 
   return children
+}
+
+export function MaybePlanGate ({ children }: { children: ReactNode }): ReactNode {
+  if (process.env.NEXT_PUBLIC_DISABLE_PLAN_GATE == 'true') {
+    return children
+  } else {
+    return <PlanGate>{children}</PlanGate>
+  }
 }

@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Authenticator } from '@w3ui/react-keyring'
 import { AuthenticationEnsurer } from '../components/Authenticator'
 import { SpaceEnsurer } from '../components/SpaceEnsurer'
-import { PlanGate } from '../components/PlanGate'
+import { MaybePlanGate } from '../components/PlanGate'
 import { W3APIProvider } from '@/components/W3API'
 
 const navLinks = [
@@ -50,7 +50,7 @@ export default function SidebarLayout ({ children }: LayoutComponentProps): JSX.
       <Authenticator className='h-full' as='div'>
         <AuthenticationEnsurer>
           <SpaceEnsurer>
-            <PlanGate>
+            <MaybePlanGate>
               <div className='flex min-h-full w-full text-white'>
                 {/* dialog sidebar for narrow browsers */}
                 <Transition.Root show={sidebarOpen} >
@@ -98,7 +98,7 @@ export default function SidebarLayout ({ children }: LayoutComponentProps): JSX.
                   </main>
                 </div>
               </div>
-            </PlanGate>
+            </MaybePlanGate>
           </SpaceEnsurer>
         </AuthenticationEnsurer>
       </Authenticator>
