@@ -11,7 +11,7 @@
 }
 
 .authenticator {
-  @apply bg-gray-900 bg-logo bg-center bg-no-repeat w-full h-screen flex flex-col justify-center items-center;
+  @apply bg-zinc-950 w-full h-screen flex flex-col justify-center items-center;
 }
 
 @keyframes bgPosDrift {
