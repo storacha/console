@@ -39,6 +39,10 @@ jobs:
       # as long as this uses https://github.com/cloudflare/next-on-pages/blob/dc529d7efa8f8568ea8f71b5cdcf78df89be6c12/packages/next-on-pages/bin/index.js,
       # env vars won't get passed through to wrangler, so if wrangler will need them, write them to .env like the previous step
       - run: pnpm pages:build
+      - run: |
+          cat .env
+          grep -o ".\{0,50\}staging.web3.storage.\{0,50\}" -R .vercel
+          cat .vercel/output/functions/index.func/.env
       - name: Deploy preview build to Cloudflare Pages
         uses: mathiasvr/command-output@v1.1.0
         id: cloudflare
