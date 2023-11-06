@@ -20,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/pnpm
+      - name: create .env from .env.tpl setting env variables used by `pnpm run build`
+        run: |
+          # set env vars from template
+          cp .env.tpl .env
       - run: pnpm pages:build
         env:
           NEXT_PUBLIC_SERVICE_DID: 'did:web:staging.web3.storage'
