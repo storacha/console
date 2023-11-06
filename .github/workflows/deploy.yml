@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/pnpm
-      - name: create .env from .env.tpl setting env variables used by `pnpm run build`
+      - name: create .env from .env.tpl setting env variables used by `pnpm run pages:build`
         run: |
           # set env vars from template
 
@@ -31,11 +31,14 @@ jobs:
 
           # set .env from .env.tpl with exclusions
           cat .env.tpl | excludeDefaultServiceVariables > .env
+
+          # add vars configuring console frontend to use staging w3up as backend
+          echo "NEXT_PUBLIC_SERVICE_DID=did:web:staging.web3.storage" >> .env
+          echo "NEXT_PUBLIC_SERVICE_URL=https://staging.up.web3.storage" >> .env
+          echo "NEXT_PUBLIC_W3UP_PROVIDER=did:web:staging.web3.storage" >> .env
+      # as long as this uses https://github.com/cloudflare/next-on-pages/blob/dc529d7efa8f8568ea8f71b5cdcf78df89be6c12/packages/next-on-pages/bin/index.js,
+      # env vars won't get passed through to wrangler, so if wrangler will need them, write them to .env like the previous step
       - run: pnpm pages:build
-        env:
-          NEXT_PUBLIC_SERVICE_DID: 'did:web:staging.web3.storage'
-          NEXT_PUBLIC_SERVICE_URL: 'https://staging.up.web3.storage'
-          NEXT_PUBLIC_W3UP_PROVIDER: 'did:web:staging.web3.storage'
       - name: Deploy preview build to Cloudflare Pages
         uses: mathiasvr/command-output@v1.1.0
         id: cloudflare
