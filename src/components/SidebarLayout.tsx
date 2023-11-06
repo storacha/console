@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Authenticator, useKeyring, Space } from '@w3ui/react-keyring'
 import { AuthenticationEnsurer } from '../components/Authenticator'
 import { SpaceEnsurer } from '../components/SpaceEnsurer'
-import { MaybePlanGate } from '../components/PlanGate'
+import { MaybePlanGate } from './PlanGate'
 import { W3APIProvider } from '@/components/W3API'
 import { SpaceFinder } from './SpaceFinder'
 import { usePathname, useRouter } from 'next/navigation'
@@ -24,9 +24,9 @@ interface SidebarComponentProps {
 }
 
 function Sidebar ({ sidebar = <div></div> }: SidebarComponentProps): JSX.Element {
-  const [{space, spaces}, { setCurrentSpace }] = useKeyring()
+  const [{ space, spaces }, { setCurrentSpace }] = useKeyring()
   const router = useRouter()
-  const pathname = usePathname()  
+  const pathname = usePathname()
   const goToSpace = (s: Space) => {
     router.push(`/space/${s.did()}`)
   }
@@ -98,19 +98,20 @@ export default function SidebarLayout ({ children }: LayoutComponentProps): JSX.
                   </Dialog>
                 </Transition.Root>
 
-              {/* static sidebar for wide browsers */}
-              <div className='hidden lg:block'>
-                <Sidebar />
-              </div>
-              <div className='w-full h-screen overflow-scroll'>
-                {/* top nav bar for narrow browsers, mainly to have a place to put the hamburger */}
-                <div className='lg:hidden flex justify-between pt-4 px-4'>
-                  <Bars3Icon className='w-6 h-6' onClick={() => setSidebarOpen(true)} />
-                  <Logo className='w-full' />
+                {/* static sidebar for wide browsers */}
+                <div className='hidden lg:block'>
+                  <Sidebar />
                 </div>
-                <main className='grow bg-gray-dark text-white p-4'>
-                  {children}
-                </main>
+                <div className='w-full h-screen overflow-scroll'>
+                  {/* top nav bar for narrow browsers, mainly to have a place to put the hamburger */}
+                  <div className='lg:hidden flex justify-between pt-4 px-4'>
+                    <Bars3Icon className='w-6 h-6' onClick={() => setSidebarOpen(true)} />
+                    <Logo className='w-full' />
+                  </div>
+                  <main className='grow bg-gray-dark text-white p-4'>
+                    {children}
+                  </main>
+                </div>
               </div>
             </MaybePlanGate>
           </SpaceEnsurer>
