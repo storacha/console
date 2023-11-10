@@ -9,19 +9,22 @@ import { H2 } from '@/components/Text'
 export default function SpacePage (): JSX.Element {
   const [{ spaces }] = useKeyring()
 
-  if (spaces.length === 0) {
-    return <div></div>
-  }
-
   return (
     <>
       <SpacesNav />
-      <div>
-        <H2>Pick a Space</H2>
-        <div className='max-w-lg border rounded-md border-zinc-700'>
-          { spaces.map(s => <Item space={s} key={s.did()} /> ) }
+      {spaces && (spaces.length > 0) ? (
+        <div>
+          <H2>Pick a Space</H2>
+          <div className='max-w-lg border rounded-md border-zinc-700'>
+            {spaces.map(s => <Item space={s} key={s.did()} />)}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          <H2>You have no spaces</H2>
+          <p>To start uploading, import or create a space by clicking on the tabs above.</p>
+        </div>
+      )}
     </>
   )
 }

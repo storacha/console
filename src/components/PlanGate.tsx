@@ -32,18 +32,20 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
 
   if (!plan?.product) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <div className="text-gray-200 text-center">
-          <h1 className="my-4 text-lg">Welcome {account}!</h1>
-          <p>
-            To get started with w3up you&apos;ll need to sign up for a subscription. If you choose
-            the free plan we won&apos;t charge your credit card, but we do need a card on file
-            before we will store your bits.
-          </p>
-          <p>
-            Pick a plan below and complete the Stripe signup flow to get started!
-          </p>
-          <StripePricingTable />
+      <div className="flex flex-col items-center h-screen">
+        <div className="text-white bg-gray-900/60 w-full rounded-md overflow-hidden">
+          <div className='px-10 py-4'>
+            <h1 className="my-4 text-lg">Welcome {account}!</h1>
+            <p className='max-w-xl mb-2'>
+              To get started with w3up you&apos;ll need to sign up for a subscription. If you choose
+              the free plan we won&apos;t charge your credit card, but we do need a card on file
+              before we will store your bits.
+            </p>
+            <p>
+              Pick a plan below and complete the Stripe checkout flow to get started!
+            </p>
+          </div>
+          <StripePricingTable className='rounded-md'/>
         </div>
       </div>
     )

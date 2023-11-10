@@ -11,7 +11,7 @@
 }
 
 .authenticator {
-  @apply bg-zinc-950 w-full h-screen flex flex-col justify-center items-center;
+  @apply flex flex-col items-start;
 }
 
 @keyframes bgPosDrift {
