@@ -46,7 +46,7 @@ export function UsageBar (): ReactNode {
     // TODO: get usage by space
   }, [account])
 
-  // if (!plan) setPlan({ product: 'did:web:starter.web3.storage' })
+  if (!plan) setPlan({ product: 'did:web:starter.web3.storage' })
   // if (!usage) setUsage({
   //   'did:key:z6MkjCoKJcunQgzihb4tXBYDd9xunhpGNoC14HEypgAe5cNW': 500_000_000,
   //   'did:key:z6MketbAFtbeqDeVHxSzSSDH2PfMTquQ3vzZCcPFweXBGe3R': 200_000_000,
@@ -59,13 +59,13 @@ export function UsageBar (): ReactNode {
   return (
     <div className='w-full'>
       {plan?.product ? (
-        <div className='lg:text-right text-xs tracking-wider font-mono mb-2'>
-          Plan: <strong>{PlanNames[plan.product] ?? plan.product}</strong> <a className='underline' href='mailto:support@web3.storage?subject=How%20to%20change%20my%20payment%20plan?'>change</a>
+        <div className='lg:text-right text-xs tracking-wider font-mono'>
+          Plan: <strong>{PlanNames[plan.product] ?? plan.product}</strong> <a className='underline' href='mailto:support@web3.storage?subject=How%20to%20change%20my%20payment%20plan?' title='Automated support for switching plans is currently in progress. to change your plan, please email support@web3.storage.'>change</a>
         </div>
       ) : null}
       {usage && limit ? (
         <>
-          <div className='rounded-full bg-white/20 overflow-hidden whitespace-nowrap outline outline-white/40 mb-3 shadow-inner' style={{ fontSize: 0, height: BarHeight }}>
+          <div className='rounded-full bg-white/20 overflow-hidden whitespace-nowrap outline outline-white/40 mt-3 mb-3 shadow-inner' style={{ fontSize: 0, height: BarHeight }}>
             {Object.entries(usage).sort((a, b) => b[1] - a[1]).map(([space, total]) => {
               return (
                 <div
