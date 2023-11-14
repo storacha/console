@@ -46,7 +46,7 @@ export function UsageBar (): ReactNode {
     // TODO: get usage by space
   }, [account])
 
-  if (!plan) setPlan({ product: 'did:web:starter.web3.storage' })
+  // if (!plan) setPlan({ product: 'did:web:starter.web3.storage' })
   // if (!usage) setUsage({
   //   'did:key:z6MkjCoKJcunQgzihb4tXBYDd9xunhpGNoC14HEypgAe5cNW': 500_000_000,
   //   'did:key:z6MketbAFtbeqDeVHxSzSSDH2PfMTquQ3vzZCcPFweXBGe3R': 200_000_000,
