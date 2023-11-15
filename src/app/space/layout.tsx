@@ -13,11 +13,9 @@ interface LayoutProps extends PropsWithChildren {
 
 export default function Layout ({ children }: LayoutProps): JSX.Element {
   return (
-    <SidebarLayout>
-      <section>
-        {children}
-      </section>
-    </SidebarLayout>
+    <>
+      {children}
+    </>
   )
 }
 
@@ -26,11 +24,6 @@ export default function Layout ({ children }: LayoutProps): JSX.Element {
 export function SpacesNav () {
   return (
     <>
-      {/* <div style={{minHeight: 68}}>
-        <p className='font-normal pt-4'>
-          Pick a space to see what's in it, or create a new one.
-        </p>
-      </div> */}
       <div className='lg:flex items-center place-items-center justify-between mt-2 mb-8'>
         <div className='lg:w-2/6 order-last'>
           <UsageBar />
