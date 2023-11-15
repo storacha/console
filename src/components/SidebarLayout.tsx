@@ -11,6 +11,7 @@ import { MaybePlanGate } from './PlanGate'
 import { SpaceFinder } from './SpaceFinder'
 import { usePathname, useRouter } from 'next/navigation'
 import { H2 } from './Text'
+import Link from 'next/link'
 
 const navLinks = [
   { name: 'Terms', href: 'https://web3.storage/docs/terms' },
@@ -21,6 +22,8 @@ const navLinks = [
 interface SidebarComponentProps {
   sidebar?: React.ReactNode
 }
+
+const footerLinkClasses = 'text-xs block text-center mt-2 px-1'
 
 function Sidebar ({ sidebar = <div></div> }: SidebarComponentProps): JSX.Element {
   const [{space, spaces}] = useKeyring()
@@ -43,8 +46,11 @@ function Sidebar ({ sidebar = <div></div> }: SidebarComponentProps): JSX.Element
         <div className='flex flex-col items-center'>
           <div className='flex flex-row space-x-2'>
             {navLinks.map((link, i) => (
-              <a key={i} className='text-xs block text-center mt-2 px-1' href={link.href}>{link.name}</a>
+              <a key={i} className={footerLinkClasses} href={link.href}>{link.name}</a>
             ))}
+            <a className={footerLinkClasses} href="/logout">
+              Log Out
+            </a>
           </div>
         </div>
       </div>
