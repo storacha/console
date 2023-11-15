@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { SpacesNav } from './space/layout'
 import { H2 } from '@/components/Text'
 import SidebarLayout from '@/components/SidebarLayout'
+import { ReactNode } from 'react'
 
 export default function HomePage () {
   return (
@@ -15,7 +16,7 @@ export default function HomePage () {
   )
 }
 
-function SpacePage (): JSX.Element {
+function SpacePage (): ReactNode {
   const [{ spaces }] = useKeyring()
 
   if (spaces.length === 0) {
