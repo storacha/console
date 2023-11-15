@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 import { Nav, NavLink } from '@/components/Nav'
 import { UsageBar } from '@/components/UsageBar'
+import SidebarLayout from '@/components/SidebarLayout'
 
 export const runtime = 'edge'
 
@@ -10,11 +11,13 @@ interface LayoutProps extends PropsWithChildren {
   }
 }
 
-export default function Layout ({children}: LayoutProps): JSX.Element {
+export default function Layout ({ children }: LayoutProps): JSX.Element {
   return (
-    <section>
-      {children}
-    </section>
+    <SidebarLayout>
+      <section>
+        {children}
+      </section>
+    </SidebarLayout>
   )
 }
 

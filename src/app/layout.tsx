@@ -17,12 +17,7 @@ export default function RootLayout ({
   return (
     <html lang="en">
       <body className='bg-grad min-h-screen'>
-        <SidebarLayout>
-          {/* <H2 explain='a decentralised bucket identified by a DID'>
-            <Link href='/'>Space</Link>
-          </H2> */}
-          {children}
-        </SidebarLayout>
+        {children}
       </body>
     </html>
   )
