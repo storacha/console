@@ -1,8 +1,6 @@
-import SidebarLayout from '@/components/SidebarLayout'
 import './globals.css'
 import type { Metadata } from 'next'
-import { H2 } from '@/components/Text'
-import Link from 'next/link'
+import { W3APIProvider } from '@/components/W3API'
 
 export const metadata: Metadata = {
   title: 'w3up console',
@@ -17,7 +15,9 @@ export default function RootLayout ({
   return (
     <html lang="en">
       <body className='bg-grad min-h-screen'>
-        {children}
+        <W3APIProvider uploadsListPageSize={20}>
+          {children}
+        </W3APIProvider>
       </body>
     </html>
   )

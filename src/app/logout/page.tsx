@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function LogoutPage () {
-  const [{account}, { unloadAgent }] = useKeyring()
+  const [, { unloadAgent }] = useKeyring()
   const router = useRouter()
   useEffect(function () {
     if (unloadAgent) {
@@ -14,6 +14,6 @@ export default function LogoutPage () {
       }
       logOutAndRedirect()
     }
-  }, [unloadAgent])
+  }, [])
   return <></>
 }
