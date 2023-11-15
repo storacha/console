@@ -27,13 +27,13 @@ function SpacePage (): JSX.Element {
       <SpacesNav />
       <H2>Pick a Space</H2>
       <div className='max-w-lg border rounded-md border-zinc-700'>
-        { spaces.map(s => <Item space={s} key={s.did()} /> ) }
+        {spaces.map(s => <Item space={s} key={s.did()} /> )}
       </div>
     </>
   )
 }
 
-function Item ({ space }: { space: Space }) {
+function Item ({space}: {space: Space}) {
   return (
     <Link href={`/space/${space.did()}`} className='flex flex-row items-start gap-2 p-3 text-white text-left bg-gray-900/30 hover:bg-gray-900/60 border-b last:border-0 border-zinc-700'>
       <DidIcon did={space.did()} />
