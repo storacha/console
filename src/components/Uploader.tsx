@@ -3,14 +3,14 @@ import type {
   ProgressStatus,
   UploadProgress,
   CARMetadata,
-  CID
-} from '@w3ui/react-uploader'
-import { CloudArrowUpIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+  AnyLink
+} from '@w3ui/react'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import {
-  Status,
-  Uploader as UploaderCore,
-  useUploaderComponent
-} from '@w3ui/react-uploader'
+  UploadStatus,
+  Uploader as W3Uploader,
+  useUploader
+} from '@w3ui/react'
 import { gatewayHost } from '../components/services'
 
 function StatusLoader ({ progressStatus }: { progressStatus: ProgressStatus }) {
@@ -69,12 +69,12 @@ export const Errored = ({ error }: { error: any }): JSX.Element => (
 
 interface DoneProps {
   file?: File
-  dataCID?: CID
+  dataCID?: AnyLink
   storedDAGShards?: CARMetadata[]
 }
 
 export const Done = ({ dataCID }: DoneProps): JSX.Element => {
-  const [, { setFile }] = useUploaderComponent()
+  const [, { setFile }] = useUploader()
   const cid: string = dataCID?.toString() ?? ''
   return (
     <div className='flex flex-col items-center w-full'>
@@ -100,19 +100,19 @@ export const Done = ({ dataCID }: DoneProps): JSX.Element => {
 }
 
 const UploaderForm = (): JSX.Element => {
-  const [{ status, file }] = useUploaderComponent()
+  const [{ status, file }] = useUploader()
   const hasFile = file !== undefined
   return (
     <>
-      <UploaderCore.Form>
+      <W3Uploader.Form>
         <div className={`relative shadow h-52 p-8 rounded-md bg-white/5 hover:bg-white/20 border-2 border-dotted border-zinc-950 flex flex-col justify-center items-center text-center`}>
           {hasFile ? '' : <span className='mb-5'><img src='/icon-tray.svg' /></span>}
           <label className={`${hasFile ? 'hidden' : 'block h-px w-px overflow-hidden absolute whitespace-nowrap'}`}>File:</label>
-          <UploaderCore.Input className={`${hasFile ? 'hidden' : 'block absolute inset-0 cursor-pointer w-full opacity-0'}`} />
+          <W3Uploader.Input className={`${hasFile ? 'hidden' : 'block absolute inset-0 cursor-pointer w-full opacity-0'}`} />
           <UploaderContents />
           {hasFile ? '' : <span>Drag files or Click to Browse</span>}
         </div>
-      </UploaderCore.Form>
+      </W3Uploader.Form>
       <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4 text-center lg:text-left'>
         <div className=''>
           <h4 className='text-sm mb-2'>🌎&nbsp;&nbsp;Public Data</h4>
@@ -155,9 +155,9 @@ function humanFileSize (bytes: number): string {
 }
 
 const UploaderContents = (): JSX.Element => {
-  const [{ status, file }] = useUploaderComponent()
+  const [{ status, file }] = useUploader()
   const hasFile = file !== undefined
-  if (status === Status.Idle) {
+  if (status === UploadStatus.Idle) {
     return hasFile
       ? (
         <>
@@ -195,18 +195,18 @@ const UploaderContents = (): JSX.Element => {
 
 const UploaderConsole = (): JSX.Element => {
   const [{ status, file, error, dataCID, storedDAGShards, uploadProgress }] =
-    useUploaderComponent()
+    useUploader()
 
   switch (status) {
-    case Status.Uploading: {
+    case UploadStatus.Uploading: {
       return <Uploading file={file} storedDAGShards={storedDAGShards} uploadProgress={uploadProgress} />
     }
-    case Status.Succeeded: {
+    case UploadStatus.Succeeded: {
       return (
         <Done file={file} dataCID={dataCID} storedDAGShards={storedDAGShards} />
       )
     }
-    case Status.Failed: {
+    case UploadStatus.Failed: {
       return <Errored error={error} />
     }
     default: {
@@ -223,11 +223,11 @@ export const Uploader = ({
   onUploadComplete
 }: SimpleUploaderProps): JSX.Element => {
   return (
-    <UploaderCore
+    <W3Uploader
       as='div'
       onUploadComplete={onUploadComplete}
     >
       <UploaderForm />
-    </UploaderCore>
+    </W3Uploader>
   )
 }

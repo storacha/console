@@ -1,13 +1,13 @@
 'use client'
 
-import { useKeyring, Space } from '@w3ui/react-keyring'
+import { useW3, Space } from '@w3ui/react'
 import { DidIcon } from '@/components/DidIcon'
 import Link from 'next/link'
 import { SpacesNav } from './space/layout'
 import { H2 } from '@/components/Text'
 
 export default function SpacePage (): JSX.Element {
-  const [{ spaces }] = useKeyring()
+  const [{ spaces }] = useW3()
 
   if (spaces.length === 0) {
     return <div></div>
@@ -30,7 +30,7 @@ function Item ({space}: {space: Space}) {
       <DidIcon did={space.did()} />
       <div className='grow overflow-hidden whitespace-nowrap text-ellipsis'>
         <span className='text-md font-semibold leading-5 m-0'>
-          {space.name() || 'Untitled'}
+          {space.name || 'Untitled'}
         </span>
         <span className='font-mono text-xs block'>
           {space.did()}
