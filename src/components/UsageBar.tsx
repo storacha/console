@@ -44,9 +44,14 @@ export function UsageBar (): ReactNode {
       const subscriptions = await client.capability.subscription.list(account.did())
       for (const { consumers } of subscriptions.results) {
         for (const space of consumers) {
-          const result = await client.capability.usage.report(space, period)
-          for (const [, report] of Object.entries(result)) {
-            usage[report.space] = report.size.final
+          try {
+            const result = await client.capability.usage.report(space, period)
+            for (const [, report] of Object.entries(result)) {
+              usage[report.space] = report.size.final
+            }
+          } catch (err) {
+            // TODO: figure out why usage/report cannot be used on old spaces 
+            console.error(err)
           }
         }
       }
