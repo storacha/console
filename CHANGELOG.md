@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0](https://github.com/web3-storage/console/compare/w3up-website-v1.2.0...w3up-website-v1.3.0) (2023-11-28)
+
+
+### Features
+
+* add logout page ([#42](https://github.com/web3-storage/console/issues/42)) ([654453d](https://github.com/web3-storage/console/commit/654453d91418ca7b65f0f04509f9233467b9cace))
+
+
+### Bug Fixes
+
+* avoid janky re-renders when navigating from / ([#44](https://github.com/web3-storage/console/issues/44)) ([1b428c4](https://github.com/web3-storage/console/commit/1b428c4741a69523cd17b8e8c0fcb4d2300dd980))
+
+
+### Other Changes
+
+* update `.env.tpl` to sensible defaults for local dev ([#43](https://github.com/web3-storage/console/issues/43)) ([2865d06](https://github.com/web3-storage/console/commit/2865d06ce48b5c811945f81e649249c046f873ab))
+
 ## [1.2.0](https://github.com/web3-storage/console/compare/w3up-website-v1.1.2...w3up-website-v1.2.0) (2023-11-14)
 
 
