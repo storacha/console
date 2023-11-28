@@ -1,12 +1,16 @@
 'use client'
 
 import { H2 } from '@/components/Text'
-import { useW3, UploadGetSuccess, FilecoinInfoSuccess } from '@w3ui/react'
+import { useW3, UploadGetSuccess, FilecoinInfoSuccess, SpaceDID, CARLink } from '@w3ui/react'
 import useSWR from 'swr'
-import { parse as parseLink } from 'multiformats/link'
+import { UnknownLink, parse as parseLink } from 'multiformats/link'
 import DefaultLoader from '@/components/Loader'
 import * as Claims from '@web3-storage/content-claims/client'
 import { Piece, PieceLink } from '@web3-storage/data-segment'
+import Link from 'next/link'
+import CopyIcon from '@/components/CopyIcon'
+import BackIcon from '@/components/BackIcon'
+import { Breadcrumbs } from '@/components/Breadcrumbs'
 
 interface PageProps {
   params: {
@@ -35,82 +39,38 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
     onError: err => console.error(err.message, err.cause)
   })
 
-  const filecoinInfoKey = `/space/${spaceDID}/filecoin/info/${root}`
-  const filecoinInfo = useSWR<FilecoinInfoSuccess|undefined>(filecoinInfoKey, {
-    fetcher: async () => {
-      if (!client || !space) return
-
-      if (client.currentSpace()?.did() !== space.did()) {
-        await client.setCurrentSpace(space.did())
-      }
-
-      const claims = await Claims.read(root)
-      let pieceLink
-      for (const claim of claims) {
-        if (claim.type === 'assert/equals' && isPieceLink(claim.equals)) {
-          pieceLink = claim.equals
-          break
-        }
-      }
-      if (!pieceLink) {
-        console.log(`No piece equivalency claim found for: ${root}`)
-        return
-      }
-
-      const { out } = await client.capability.filecoin.info(pieceLink)
-      if (out.ok) {
-        return out.ok
-      }
-    },
-    onError: err => console.error(err.message, err.cause)
-  })
-
-  if (upload.isLoading) {
-    return (
-      <div className='text-center'>
-        <DefaultLoader  className='w-12 h-12 inline-block' />
-      </div>
-    )
+  if (!space) {
+    return <h1>Space not found</h1>
   }
-
-  if (!upload.data) {
-    return <h1>Not Found</h1>
-  }
-  const url = `https://${upload.data.root.toString()}.ipfs.w3s.link`
+  const url = `https://${root}.ipfs.w3s.link`
   return (
     <div>
+      <Breadcrumbs space={space.did()} root={root} />
       <H2>Root CID</H2>
       <div className="pb-5 font-mono text-sm overflow-hidden no-wrap text-ellipsis">
-        { upload.data.root.toString() }
+        {root.toString()}
+        <CopyIcon text={root.toString()} />
       </div>
       <H2>URL</H2>
-      <div className="pb-5">
-        <a href={url} className="font-mono text-sm underline m-0 p-0 block">{url}</a>
+      <div className="pb-5 overflow-hidden no-wrap text-ellipsis">
+        <a href={url} className="font-mono text-sm underline m-0 p-0">{url}</a>
+        <CopyIcon text={url} />
       </div>
       <H2>Shards</H2>
       <div className='pb-5'>
-         { upload.data.shards?.map(link => <Shard cid={link.toString()} key={link.toString()} />) }
+        {upload.isLoading
+          ? <DefaultLoader className='w-5 h-5 inline-block' />
+          : upload.data?.shards?.map(link => <Shard space={space.did()} root={root} shard={link} key={link.toString()} />)}
       </div>
-      <H2>Storage Providers</H2>
-      <p className='font-mono text-sm'>
-        {filecoinInfo.data
-          ? (
-            <a href={`https://filfox.info/deal/${filecoinInfo.data.deals[0].aux.dataSource.dealID}`}>f0{filecoinInfo.data.deals[0].provider}</a>
-          ) : 'Aggregating...'}
-      </p>
     </div>
   )
 }
 
-function Shard ({ cid }: { cid: string}) {
-  return <div className="font-mono text-sm overflow-hidden no-wrap text-ellipsis">{cid}</div> 
-}
-
-function isPieceLink(link: any): link is PieceLink {
-  try {
-    Piece.fromLink(link)
-    return true
-  } catch {
-    return false
-  }
+function Shard ({ space, root, shard }: { space: SpaceDID, root: UnknownLink, shard: CARLink }) {
+  return (
+    <div>
+      <Link href={`/space/${space}/root/${root}/shard/${shard}`} className='font-mono text-sm overflow-hidden no-wrap text-ellipsis underline'>{shard.toString()}</Link>
+      <CopyIcon text={shard.toString()} />
+    </div>
+  )
 }

@@ -5,6 +5,8 @@ import { useW3, UnknownLink, UploadListSuccess } from '@w3ui/react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
 
+const pageSize = 20
+
 interface PageProps {
   params: {
     did: string
@@ -21,7 +23,7 @@ export default function Page ({ params, searchParams }: PageProps): JSX.Element 
   const space = spaces.find(s => s.did() === spaceDID)
 
   const key = `/space/${spaceDID}/uploads?cursor=${searchParams.cursor ?? ''}&pre=${searchParams.pre ?? 'false'}`
-  const { data: uploads, isLoading, mutate } = useSWR<UploadListSuccess|undefined>(key, {
+  const { data: uploads, isLoading, isValidating, mutate } = useSWR<UploadListSuccess|undefined>(key, {
     fetcher: async () => {
       if (!client || !space) return
 
@@ -31,10 +33,12 @@ export default function Page ({ params, searchParams }: PageProps): JSX.Element 
 
       return await client.capability.upload.list({
         cursor: searchParams.cursor,
-        pre: searchParams.pre === 'true'
+        pre: searchParams.pre === 'true',
+        size: pageSize
       })
     },
-    onError: err => console.error(err.message, err.cause)
+    onError: err => console.error(err.message, err.cause),
+    keepPreviousData: true
   })
 
   const router = useRouter()
@@ -43,8 +47,12 @@ export default function Page ({ params, searchParams }: PageProps): JSX.Element 
   if (!space) return <div />
 
   const handleSelect = (root: UnknownLink) => router.push(`${pathname}/root/${root}`)
-  const handleNext = () => router.push(`${pathname}?cursor=${uploads?.after}`)
-  const handlePrev = () => router.push(`${pathname}?cursor=${uploads?.before}`)
+  const handleNext = uploads?.after && (uploads.results.length === pageSize)
+    ? () => router.push(`${pathname}?cursor=${uploads.after}`)
+    : undefined
+  const handlePrev = searchParams.cursor && uploads?.before
+    ? () => router.push(`${pathname}?cursor=${uploads.before ?? ''}&pre=true`)
+    : undefined
   const handleRefresh = () => mutate()
 
   return (
@@ -52,6 +60,7 @@ export default function Page ({ params, searchParams }: PageProps): JSX.Element 
       space={space}
       uploads={uploads?.results ?? []}
       loading={isLoading}
+      validating={isValidating}
       onSelect={handleSelect}
       onNext={handleNext}
       onPrev={handlePrev}

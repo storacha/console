@@ -48,7 +48,7 @@ export const Uploading = ({
   uploadProgress: UploadProgress
 }): JSX.Element => (
   <div className='flex flex-col items-center w-full'>
-    <h1 className='font-bold text-sm uppercase text-gray-400'>Uploading {file?.name}</h1>
+    <h1 className='font-bold text-sm uppercase text-zinc-950'>Uploading {file?.name}</h1>
     <Loader uploadProgress={uploadProgress} />
     {storedDAGShards?.map(({ cid, size }) => (
       <p className='text-xs max-w-full overflow-hidden text-ellipsis' key={cid.toString()}>
@@ -78,7 +78,7 @@ export const Done = ({ dataCID }: DoneProps): JSX.Element => {
   const cid: string = dataCID?.toString() ?? ''
   return (
     <div className='flex flex-col items-center w-full'>
-      <h1 className='font-bold text-sm uppercase text-gray-400 mb-1 '>Uploaded</h1>
+      <h1 className='font-bold text-sm uppercase text-zinc-950 mb-1 '>Uploaded</h1>
       <a
         className='font-mono text-xs max-w-full overflow-hidden no-wrap text-ellipsis'
         href={`https://${cid}.ipfs.${gatewayHost}/`}
