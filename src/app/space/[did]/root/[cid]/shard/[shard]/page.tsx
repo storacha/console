@@ -103,8 +103,17 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
       <div className='pb-5 font-mono text-sm overflow-hidden no-wrap text-ellipsis'>
         {claim.isLoading || filecoinInfo.isLoading
           ? <DefaultLoader className='w-5 h-5 inline-block' />
-          : filecoinInfo.data && filecoinInfo.data.deals.length
-            ? <>{filecoinInfo.data.deals[0].aggregate.toString()}<CopyIcon text={String(filecoinInfo.data.deals[0].aggregate.toString())} /></>
+          : filecoinInfo.data?.aggregates.length
+            ? filecoinInfo.data?.aggregates.map(({ aggregate }) => {
+                return (
+                  <div key={aggregate.toString()}>
+                    {aggregate.toString()}<CopyIcon text={aggregate.toString()} />
+                    <br/>
+                    <span className='font-sans opacity-60'>aka </span>
+                    {Piece.fromLink(aggregate).toInfo().link.toString()}<CopyIcon text={aggregate.toString()} />
+                  </div>
+                )
+              })
             : 'Unknown'}
       </div>
       <H2>Storage Providers</H2>
