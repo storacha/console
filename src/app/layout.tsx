@@ -1,6 +1,6 @@
-import SidebarLayout from '@/components/SidebarLayout'
 import './globals.css'
 import type { Metadata } from 'next'
+import Provider from '@/components/W3UIProvider'
 
 export const metadata: Metadata = {
   title: 'w3up console',
@@ -15,9 +15,9 @@ export default function RootLayout ({
   return (
     <html lang="en">
       <body className='bg-grad min-h-screen'>
-        <SidebarLayout>
-          {children}
-        </SidebarLayout>
+        <Provider>
+          <>{children}</>
+        </Provider>
       </body>
     </html>
   )
