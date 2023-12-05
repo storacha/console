@@ -38,6 +38,9 @@ dependencies:
   '@web3-storage/data-segment':
     specifier: ^5.0.0
     version: 5.0.0
+  archy:
+    specifier: ^1.0.0
+    version: 1.0.0
   ariakit-utils:
     specifier: 0.17.0-next.27
     version: 0.17.0-next.27
@@ -64,6 +67,9 @@ devDependencies:
   '@cloudflare/next-on-pages':
     specifier: ^1.6.3
     version: 1.6.3(vercel@32.4.1)(wrangler@3.11.0)
+  '@types/archy':
+    specifier: ^0.0.36
+    version: 0.0.36
   '@types/blueimp-md5':
     specifier: ^2.18.0
     version: 2.18.0
@@ -955,6 +961,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/archy@0.0.36:
+    resolution: {integrity: sha512-toTRTGD8trLtJsOaYbReoU/fyvRF1a4C5WtqjDZ3NnT/zvO807opSBRBJBr5VhD66JnY3BUz2UvnY5/KMAt6mw==}
+    dev: true
+
   /@types/blueimp-md5@2.18.0:
     resolution: {integrity: sha512-f4A+++lGZGJvVSgeyMkqA7BEf2BVQli6F+qEykKb49c5ieWQBkfpn6CP5c1IZr2Yi2Ofl6Fj+v0e1fN18Z8Cnw==}
     dev: true
@@ -1595,6 +1605,10 @@ packages:
   /aproba@2.0.0:
     resolution: {integrity: sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==}
     dev: true
+
+  /archy@1.0.0:
+    resolution: {integrity: sha512-Xg+9RwCg/0p32teKdGMPTPnVXKD0w3DfHnFTficozsAgsvq2XenPJq/MYpzzQ/v8zrOyJn6Ds39VA4JIDwFfqw==}
+    dev: false
 
   /are-we-there-yet@2.0.0:
     resolution: {integrity: sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==}
