@@ -76,7 +76,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
       if (out.error) {
         throw new Error('failed to get filecoin info', { cause: out.error })
       }
-      console.log(out.ok.aggregates)
+
       return out.ok
     },
     onError: err => console.error(err.message, err.cause)
@@ -126,7 +126,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
                     {pieceInfo.link.toString()}<CopyIcon text={aggregate.toString()} />
                     <div className='pl-10'>
                       └── Height: {pieceInfo.height}
-                      <QuestionIcon title={'Height is encoded in v2 piece CID'} />
+                      <QuestionIcon title='Height is encoded in v2 piece CID' />
                     </div>
                     <span className='opacity-60'>v2: </span>
                     <span className='border-purple-500 border-b-2 border-dotted'>{aggregate.toString()}</span>
