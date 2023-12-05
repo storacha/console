@@ -6,13 +6,14 @@ import useSWR from 'swr'
 import { parse as parseLink } from 'multiformats/link'
 import DefaultLoader from '@/components/Loader'
 import * as Claims from '@web3-storage/content-claims/client'
-import { Aggregate, MerkleTreeNode, Piece, PieceLink, ProofData } from '@web3-storage/data-segment'
+import { Aggregate, MerkleTreeNode, Piece, PieceLink, PieceView, ProofData } from '@web3-storage/data-segment'
 import { Proof } from '@web3-storage/data-segment'
 import CopyIcon from '@/components/CopyIcon'
 import { EqualsClaim } from '@web3-storage/content-claims/client/api'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { filesize } from '@/lib'
 import archy from 'archy'
+import { base32 } from 'multiformats/bases/base32'
 
 interface PageProps {
   params: {
@@ -117,8 +118,8 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
                     <span className='font-sans opacity-60'>aka </span>
                     {Piece.fromLink(aggregate).toInfo().link.toString()}<CopyIcon text={aggregate.toString()} />
                     <H2 className='mt-5'>Inclusion Proof</H2>
-                    <pre className='font-mono text-sm'>
-                      {renderInclusionProof(inclusion.subtree, piece)}
+                    <pre className='font-mono text-sm overflow-x-auto'>
+                      {renderInclusionProof(inclusion.subtree, Piece.fromLink(piece))}
                     </pre>
                   </div>
                 )
@@ -159,9 +160,7 @@ function isPieceLink(link: any): link is PieceLink {
 const MAX_DEPTH = 63
 
 // Adapted from https://github.com/web3-storage/data-segment/blob/e9cdcbf76232e5b92ae1d13f6cf973ec9ab657ef/src/proof.js#L62-L86
-function renderInclusionProof (proof: ProofData, pieceLink: PieceLink): string {
-  const piece = Piece.fromLink(pieceLink)
-
+function renderInclusionProof (proof: ProofData, piece: PieceView): string {
   if (Proof.depth(proof) > MAX_DEPTH) {
     throw new RangeError('merkle proofs with depths greater than 63 are not supported')
   }
@@ -176,19 +175,19 @@ function renderInclusionProof (proof: ProofData, pieceLink: PieceLink): string {
   let top = root
   let right = 0n
 
-  for (const node of Proof.path(proof)) {
+  for (const [i, node] of Object.entries(Proof.path(proof))) {
     right =  position & 1n
     position = position >> 1n
 
-    let label = `Uint8Array(${top.length}) [${top}]`
-    if (top === root) {
-      label = `${label}\n(${pieceLink})`
-    }
+    const label = top === root
+      ? Piece.toLink(piece).toString()
+      // : `MerkleTreeNode(${top.length}) [${top}]`
+      : base32.encode(top)
 
     if (right === 1n) {
-      nodes = ['*', { label, nodes }]
+      nodes = [base32.encode(node), { label, nodes }]
     } else {
-      nodes = [{ label, nodes }, '*']
+      nodes = [{ label, nodes }, base32.encode(node)]
     }
     top = right === 1n ? Proof.computeNode(node, top) : Proof.computeNode(top, node)
   }
