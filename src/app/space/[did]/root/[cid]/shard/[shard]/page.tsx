@@ -237,7 +237,7 @@ function InclusionProof ({ proof, piece, style }: { proof: ProofData, piece: Pie
   const data = { label: aggregate.toString(), nodes }
 
   return (
-    <div className='font-mono'>
+    <div className='font-mono whitespace-nowrap overflow-x-scroll'>
       {archy(data).split('\n').map(line => {
         if (!line) return <div />
         if (line.indexOf(' ') === -1) {
