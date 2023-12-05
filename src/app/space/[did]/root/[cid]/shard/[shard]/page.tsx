@@ -117,7 +117,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
                     <span className='font-sans opacity-60'>aka </span>
                     {Piece.fromLink(aggregate).toInfo().link.toString()}<CopyIcon text={aggregate.toString()} />
                     <H2 className='mt-5'>Inclusion Proof</H2>
-                    <pre className='font-mono text-xs'>
+                    <pre className='font-mono text-sm'>
                       {renderInclusionProof(inclusion.subtree, piece)}
                     </pre>
                   </div>
