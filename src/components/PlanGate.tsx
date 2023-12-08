@@ -8,9 +8,8 @@ import { Web3StorageLogo } from '@/brand';
 import { usePlan } from '@/hooks';
 
 export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
-  const [error, setError] = useState<any>()
   const [{ accounts }] = useW3()
-  const { data: plan } = usePlan(accounts[0])
+  const { data: plan, error } = usePlan(accounts[0])
   if (!plan && !error) {
     return <TopLevelLoader />
   }
@@ -43,7 +42,8 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
 }
 
 export function MaybePlanGate ({ children }: { children: ReactNode }): ReactNode {
-  if (process.env.NEXT_PUBLIC_DISABLE_PLAN_GATE == 'true') {
+  console.log("MEBBE")
+  if (false) {
     return children
   } else {
     return <PlanGate>{children}</PlanGate>
