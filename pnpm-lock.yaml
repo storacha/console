@@ -30,8 +30,8 @@ dependencies:
     specifier: ^9.0.0
     version: 9.0.0
   '@w3ui/react':
-    specifier: ^1.2.0
-    version: 1.2.0(@types/react@18.2.42)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^1.3.0
+    version: 1.3.0(@types/react@18.2.42)(react-dom@18.2.0)(react@18.2.0)
   '@web3-storage/content-claims':
     specifier: ^3.2.1
     version: 3.2.1
@@ -1351,8 +1351,8 @@ packages:
       ts-morph: 12.0.0
     dev: true
 
-  /@w3ui/core@1.1.0:
-    resolution: {integrity: sha512-nvLFagzB+1BvdPV1GuHmuOe7XBMbAQxp8z9MG6lw/I/hLWRHx/SRZAfu/6fvrMu3SUl7SjusfaMyP8zKhhs6Dw==}
+  /@w3ui/core@1.1.1:
+    resolution: {integrity: sha512-428LhUDm+HiwZ97pz3tAdHuarL7RF+bj4p15t64W6UxtqOMjLKSh3yakQzPppH29lFTr7lhpyi4PbQkqJNB2yA==}
     dependencies:
       '@ipld/dag-ucan': 3.4.0
       '@ucanto/client': 9.0.0
@@ -1361,19 +1361,19 @@ packages:
       '@ucanto/transport': 9.0.0
       '@web3-storage/access': 18.0.6
       '@web3-storage/did-mailto': 2.1.0
-      '@web3-storage/w3up-client': 11.2.0
+      '@web3-storage/w3up-client': 11.2.1
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@w3ui/react@1.2.0(@types/react@18.2.42)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-b32cjBqEt19CF/imdir1eQT/0s7lVE/eHOSAQG6lHiI51HDmeD7aOqnwN+rZFP+7Ib6PqvJb5vOP+3oTX2h8qA==}
+  /@w3ui/react@1.3.0(@types/react@18.2.42)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-SJnqjapMMbWdo//cYSp6YfaYykvi9Sp6bAfj98frnPrYVXA+1YjgJl5zDsvy0fpkMBuafvb9c8fvx109c2FDYw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@ariakit/react': 0.3.7(react-dom@18.2.0)(react@18.2.0)
       '@ariakit/react-core': 0.3.7(react-dom@18.2.0)(react@18.2.0)
-      '@w3ui/core': 1.1.0
+      '@w3ui/core': 1.1.1
       ariakit-react-utils: 0.17.0-next.27(@types/react@18.2.42)(react@18.2.0)
       react: 18.2.0
     transitivePeerDependencies:
@@ -1496,8 +1496,8 @@ packages:
       - encoding
     dev: false
 
-  /@web3-storage/w3up-client@11.2.0:
-    resolution: {integrity: sha512-ZHXoca1mj32Q2SbNzRtjG/YRIYaA5q6si7PQfv1/5cUgZx60XqD9uBpSB88fCJhzIPHWwPBvDNVFQPL0ASy4cA==}
+  /@web3-storage/w3up-client@11.2.1:
+    resolution: {integrity: sha512-04/OfMKUjPoF+l87VjItYFb1wBaljiV8YJbBMlNm9Zf7gazWPDxjfuSWYUMYb8UAPhxQZnV2uGrqUaNqPlUqUg==}
     dependencies:
       '@ipld/dag-ucan': 3.4.0
       '@ucanto/client': 9.0.0
