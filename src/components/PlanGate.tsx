@@ -42,7 +42,6 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
 }
 
 export function MaybePlanGate ({ children }: { children: ReactNode }): ReactNode {
-  console.log("MEBBE")
   if (false) {
     return children
   } else {
