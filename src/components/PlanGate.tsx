@@ -42,7 +42,7 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
 }
 
 export function MaybePlanGate ({ children }: { children: ReactNode }): ReactNode {
-  if (false) {
+  if (process.env.NEXT_PUBLIC_DISABLE_PLAN_GATE == 'true') {
     return children
   } else {
     return <PlanGate>{children}</PlanGate>
