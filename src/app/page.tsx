@@ -48,12 +48,12 @@ function guessRecoverableCapabilities(delegations: Delegation[]): RecoverableCap
 
 function SpacePage (): ReactNode {
   const [{ spaces, client }] = useW3()
+  const { data: delegations } = useClaims(client)
 
   if (spaces.length === 0) {
     return <div></div>
   }
 
-  const { data: delegations } = useClaims(client)
   const recoverableCapabilities = delegations && guessRecoverableCapabilities(delegations)
 
   return (
