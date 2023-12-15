@@ -116,12 +116,12 @@ export function SpaceMnemonicForm ({
     <div className={className}>
       <div className='max-w-xl text-sm leading-6'>
         <p className='my-2'>
-          Your space is controlled by a private key. We'll give you an opportunity to delegate
-          the ability to recover control over your space to our service, but we won't store
+          Your space is controlled by a private key. We&apos;ll give you an opportunity to delegate
+          the ability to recover control over your space to our service, but we won&apos;t store
           your private key.
         </p>
         <p className='my-2'>
-          In order to ensure you don't lose access to your space, please write down the
+          In order to ensure you don&apos;t lose access to your space, please write down the
           following phrase and keep it in a secure place like 1Password or a piece of paper
           in a safe. It is a representation of your private key, and anybody with access
           to this phrase will be able to control and access your space. Keep it secret, keep
@@ -138,11 +138,11 @@ export function SpaceMnemonicForm ({
       <div className='flex flex-row space-x-4 mt-4'>
         <button className='bg-zinc-950 hover:outline text-white font-bold text-sm px-6 py-2 rounded-full whitespace-nowrap'
           onClick={saved}>
-          OK, I've saved it.
+          OK, I&apos;ve saved it.
         </button>
         <button className='bg-zinc-950 hover:outline text-white font-bold text-sm px-6 py-2 rounded-full whitespace-nowrap'
           onClick={backup}>
-          I'd prefer to back it up with your service.
+          I&apos;d prefer to back it up with your service.
         </button>
       </div>
     </div>
@@ -230,7 +230,7 @@ export function SpaceBillingForm ({
             </p>
             <a className="text-blue-800" target="_blank" rel="noreferrer nofollow" href="/plans">Plan Picker Page</a>
             <p className='my-2'>
-              Once you're done, hit the button below to refresh your plan information:
+              Once you&apos;re done, hit the button below to refresh your plan information:
             </p>
           </div>
           <button className='bg-zinc-950 hover:outline text-white font-bold text-sm px-6 py-2 rounded-full whitespace-nowrap'
