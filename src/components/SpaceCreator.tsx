@@ -102,6 +102,7 @@ export function SpaceMnemonicForm ({
   ownedSpace,
   setPreferDelegateRecovery
 }: SpaceMnemonicFormProps): ReactNode {
+  const [showMnemonic, setShowMnemonic] = useState(false)
   const { nextStep } = useWizard()
   function saved () {
     nextStep()
@@ -127,8 +128,12 @@ export function SpaceMnemonicForm ({
           it safe!
         </p>
       </div>
+      <button className='bg-zinc-950 hover:outline text-white font-bold text-sm px-6 py-2 rounded-full whitespace-nowrap'
+        onClick={() => setShowMnemonic(!showMnemonic)}>
+        {showMnemonic ? 'Hide Recovery Phrase' : 'Show Recovery Phrase'}
+      </button>
       <code className='block bg-white/50 p-2 mx-2 my-4'>
-        {mnemonic}
+        {showMnemonic ? mnemonic : ''}
       </code>
       <div className='flex flex-row space-x-4 mt-4'>
         <button className='bg-zinc-950 hover:outline text-white font-bold text-sm px-6 py-2 rounded-full whitespace-nowrap'
@@ -223,7 +228,7 @@ export function SpaceBillingForm ({
               Before you can set up billing for this space, you need to pick a plan. You can
               do that by opening the following link in a new tab:
             </p>
-            <a target="_blank" rel="noreferrer nofollow" href="/plan">Plan Picker Page</a>
+            <a className="text-blue-800" target="_blank" rel="noreferrer nofollow" href="/plans">Plan Picker Page</a>
             <p className='my-2'>
               Once you're done, hit the button below to refresh your plan information:
             </p>
@@ -324,11 +329,22 @@ export function SpaceRecoveryForm ({
   )
 }
 
-export function SpacePreview ({ did, name }: { did?: SpaceDID, name?: string }) {
+interface SpacePreviewProps {
+  did?: SpaceDID
+  name?: string
+  className?: string
+}
+
+export function SpacePreview ({ did, name, className }: SpacePreviewProps) {
   if (!did) {
-    return <Loader />
-  } else {
     return (
+      <div className={className}>
+        <SpaceCreatorWizardLoader message={'Loading your space...'} />
+      </div>
+    )
+  }
+  return (
+    <div className={className}>
       <figure className='p-4 flex flex-row items-start gap-2 bg-zinc-950/10 hover:bg-white/10 rounded'>
         <Link href={`/space/${did}`} className='block'>
           <DidIcon did={did} />
@@ -349,8 +365,8 @@ export function SpacePreview ({ did, name }: { did?: SpaceDID, name?: string }) 
           </Link>
         </div>
       </figure>
-    )
-  }
+    </div>
+  )
 }
 
 interface SpaceCreatorWizardProps {
