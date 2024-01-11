@@ -273,6 +273,7 @@ export const Uploader = ({
     <W3Uploader
       as='div'
       onUploadComplete={onUploadComplete}
+      defaultWrapInDirectory={true}
     >
       <UploaderForm />
     </W3Uploader>
