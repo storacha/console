@@ -51,16 +51,19 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
         {root.toString()}
         <CopyIcon text={root.toString()} />
       </div>
-      <H2>URL</H2>
-      <div className="pb-5 overflow-hidden no-wrap text-ellipsis">
-        <a href={url} className="font-mono text-sm underline m-0 p-0">{url}</a>
-        <CopyIcon text={url} />
-      </div>
       <H2>Shards</H2>
       <div className='pb-5'>
         {upload.isLoading
           ? <DefaultLoader className='w-5 h-5 inline-block' />
           : upload.data?.shards?.map(link => <Shard space={space.did()} root={root} shard={link} key={link.toString()} />)}
+      </div>
+      <H2>URL</H2>
+      <div className='bg-white bg-opacity-30 rounded max-w-4xl shadow-inner'>
+        <div className="p-2 overflow-hidden no-wrap text-ellipsis">
+          <a href={url} className="font-mono text-sm underline m-0 p-0">{url}</a>
+          <CopyIcon text={url} />
+        </div>
+        <iframe src={url} className='w-full h-72 bg-white' inert='inert'></iframe>
       </div>
     </div>
   )
