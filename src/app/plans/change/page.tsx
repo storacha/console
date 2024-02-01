@@ -81,8 +81,6 @@ function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }:
 }
 
 export default function Plans () {
-
-
   return (
     <div className='py-8 flex flex-col items-center'>
       <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
