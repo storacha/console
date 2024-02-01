@@ -1,3 +1,5 @@
+!! demonstrating build failure, do not merge !!
+
 # Console
 
 > Your dashboard for web3.storage
