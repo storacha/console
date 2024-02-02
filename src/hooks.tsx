@@ -24,6 +24,9 @@ export const usePlan = (account: Account) => {
   // @ts-ignore it's important to assign this into the existing object
   // to avoid calling the getters in SWRResponse when copying values over -
   // I can't think of a cleaner way to do this but open to refactoring
-  result.setPlan = async (plan: DID) => await mutate(planKey(account), account.plan.set(plan))
+  result.setPlan = async (plan: DID) => {
+    await account.plan.set(plan)
+    await result.mutate()
+  }
   return result as UsePlanResult
 }

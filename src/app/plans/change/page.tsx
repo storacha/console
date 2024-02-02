@@ -5,6 +5,7 @@ import { useW3, DID } from "@w3ui/react"
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import DefaultLoader from "@/components/Loader"
 import { useState } from "react"
+import SidebarLayout from "@/components/SidebarLayout"
 
 interface PlanSectionProps {
   planID: DID
@@ -82,14 +83,16 @@ function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }:
 
 export default function Plans () {
   return (
-    <div className='py-8 flex flex-col items-center'>
-      <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
-      <p className='mb-4'>Pick the price plan that works for you.</p>
-      <div className='flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2'>
-        <PlanSection planID='did:web:starter.web3.storage' planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
-        <PlanSection planID='did:web:lite.web3.storage' planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
-        <PlanSection planID='did:web:business.web3.storage' planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
+    <SidebarLayout>
+      <div className='py-8 flex flex-col items-center'>
+        <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
+        <p className='mb-4'>Pick the price plan that works for you.</p>
+        <div className='flex flex-col space-y-2 2xl:flex-row 2xl:space-y-0 2xl:space-x-2'>
+          <PlanSection planID='did:web:starter.web3.storage' planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
+          <PlanSection planID='did:web:lite.web3.storage' planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
+          <PlanSection planID='did:web:business.web3.storage' planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
+        </div>
       </div>
-    </div>
+    </SidebarLayout>
   )
 }
