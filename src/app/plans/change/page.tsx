@@ -15,14 +15,19 @@ interface PlanSectionProps {
   perGbFee: number
 }
 
+const PLANS: Record<string, DID<'web'>> = {
+  starter: 'did:web:starter.web3.storage',
+  lite: 'did:web:lite.web3.storage',
+  business: 'did:web:business.web3.storage',
+}
+
 const planRanks: Record<string, number> = {
-  'did:web:starter.web3.storage': 0,
-  'did:web:lite.web3.storage': 1,
-  'did:web:business.web3.storage': 2
+  [PLANS['starter']]: 0,
+  [PLANS['lite']]: 1,
+  [PLANS['business']]: 2
 }
 
 const buttonText = (currentPlan: string, newPlan: string) => (planRanks[currentPlan] > planRanks[newPlan]) ? 'Downgrade' : 'Upgrade'
-
 
 function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }: PlanSectionProps) {
   const [{ accounts }] = useW3()
@@ -31,9 +36,12 @@ function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }:
   const isCurrentPlan = currentPlanID === planID
   const [isUpdatingPlan, setIsUpdatingPlan] = useState(false)
   async function selectPlan (selectedPlanID: DID) {
-    setIsUpdatingPlan(true)
-    await setPlan(selectedPlanID)
-    setIsUpdatingPlan(false)
+    try {
+      setIsUpdatingPlan(true)
+      await setPlan(selectedPlanID)
+    } finally {
+      setIsUpdatingPlan(false)
+    }
   }
   return (
     <div className={`flex flex-col items-center rounded border-2 border-solid border-slate-800 w-[21rem] p-6 ${isCurrentPlan ? 'bg-blue-800/10' : 'bg-slate-800/10'}`}>
@@ -88,9 +96,9 @@ export default function Plans () {
         <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
         <p className='mb-4'>Pick the price plan that works for you.</p>
         <div className='flex flex-col space-y-2 xl:flex-row xl:space-y-0 xl:space-x-2'>
-          <PlanSection planID='did:web:starter.web3.storage' planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
-          <PlanSection planID='did:web:lite.web3.storage' planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
-          <PlanSection planID='did:web:business.web3.storage' planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
+          <PlanSection planID={PLANS['starter']} planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
+          <PlanSection planID={PLANS['lite']} planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
+          <PlanSection planID={PLANS['business']} planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
         </div>
       </div>
     </SidebarLayout>

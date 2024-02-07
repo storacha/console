@@ -60,17 +60,17 @@ export function UsageBar (): ReactNode {
   return (
     <div className='w-full'>
       {plan?.product ? (
-        <div className='lg:text-right text-xs tracking-wider font-mono flex flex-row justify-end space-x-2'>
-          <div>Plan:&nbsp;<strong>{Plans[plan.product]?.name ?? plan.product}</strong></div>
+        <div className='lg:text-right text-xs tracking-wider font-mono flex flex-row justify-end space-x-2 whitespace-nowrap'>
+          <div>Plan: <strong>{Plans[plan.product]?.name ?? plan.product}</strong></div>
           <Link className='underline'
             href='/plans/change'
             title='Automated support for switching plans is currently in progress. to change your plan, please email support@web3.storage.'>
-            change&nbsp;plan
+            change plan
           </Link>
           <a className='underline'
             href={process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK}
             target='_blank' rel='noopener noreferrer'>
-            update&nbsp;billing
+            update billing
           </a>
         </div>
       ) : null}
