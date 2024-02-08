@@ -40,7 +40,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
     onError: err => console.error(err.message, err.cause)
   })
 
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [isRemoveConfirmModalOpen, setRemoveConfirmModalOpen] = useState(false)
   const router = useRouter()
   const { mutate } = useSWRConfig()
 
@@ -50,7 +50,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
 
   const handleRemove = async () => {
     await client?.remove(root, { shards: true })
-    setDeleteModalOpen(false)
+    setRemoveConfirmModalOpen(false)
     // ensure list data is fresh
     mutate(`/space/${spaceDID}/uploads?cursor=&pre=`)
     // navigate to list (this page no longer exists)
@@ -78,15 +78,15 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
           : upload.data?.shards?.map(link => <Shard space={space.did()} root={root} shard={link} key={link.toString()} />)}
       </div>
 
-      <button onClick={e => { e.preventDefault(); setDeleteModalOpen(true) }} className={`inline-block bg-zinc-950 text-white font-bold text-sm pl-4 pr-6 py-2 rounded-full whitespace-nowrap hover:bg-red-700 hover:outline`}>
+      <button onClick={e => { e.preventDefault(); setRemoveConfirmModalOpen(true) }} className={`inline-block bg-zinc-950 text-white font-bold text-sm pl-4 pr-6 py-2 rounded-full whitespace-nowrap hover:bg-red-700 hover:outline`}>
         <TrashIcon className='h-5 w-5 inline-block mr-1 align-middle' style={{marginTop: -4}} /> Remove
       </button>
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
+      <RemoveConfirmModal
+        isOpen={isRemoveConfirmModalOpen}
         root={root}
         shards={upload.data?.shards ?? []}
         onConfirm={handleRemove}
-        onCancel={() => setDeleteModalOpen(false)}
+        onCancel={() => setRemoveConfirmModalOpen(false)}
       />
     </div>
   )
@@ -101,7 +101,7 @@ function Shard ({ space, root, shard }: { space: SpaceDID, root: UnknownLink, sh
   )
 }
 
-interface ConfirmModalProps {
+interface RemoveConfirmModalProps {
   isOpen: boolean
   root: UnknownLink
   shards: UnknownLink[]
@@ -109,7 +109,7 @@ interface ConfirmModalProps {
   onCancel: () => void
 }
 
-function ConfirmModal ({ isOpen, root, shards, onConfirm, onCancel }: ConfirmModalProps) {
+function RemoveConfirmModal ({ isOpen, root, shards, onConfirm, onCancel }: RemoveConfirmModalProps) {
   const [confirmed, setConfirmed] = useState(false)
   const displayShards = shards.slice(0, 10)
   return (
