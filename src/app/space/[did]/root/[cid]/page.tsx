@@ -121,7 +121,7 @@ function RemoveConfirmModal ({ isOpen, root, shards, onConfirm, onCancel }: Remo
             Confirm remove
           </Dialog.Title>
           <Dialog.Description className='py-2'>
-            Are you sure your want to remove <span className='font-mono font-bold text-sm'>{root.toString()}</span>?
+            Are you sure you want to remove <span className='font-mono font-bold text-sm'>{root.toString()}</span>?
           </Dialog.Description>
 
           <p className='py-2'>The following shards will be removed:</p>
