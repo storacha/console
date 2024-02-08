@@ -49,8 +49,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
   }
 
   const handleRemove = async () => {
-    if (!client) return
-    await client.remove(root, { shards: true })
+    await client?.remove(root, { shards: true })
     setDeleteModalOpen(false)
     // ensure list data is fresh
     mutate(`/space/${spaceDID}/uploads?cursor=&pre=`)
