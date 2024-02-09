@@ -12,6 +12,7 @@ import Link from 'next/link'
 import CopyIcon from '@/components/CopyIcon'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { useRouter } from 'next/navigation'
+import { createUploadsListKey } from '@/cache'
 
 interface PageProps {
   params: {
@@ -52,7 +53,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
     await client?.remove(root, { shards: true })
     setRemoveConfirmModalOpen(false)
     // ensure list data is fresh
-    mutate(`/space/${spaceDID}/uploads?cursor=&pre=`)
+    mutate(createUploadsListKey(space.did()))
     // navigate to list (this page no longer exists)
     router.replace(`/space/${spaceDID}`)
   }
