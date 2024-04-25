@@ -2,11 +2,13 @@
 
 import { usePlan } from "@/hooks"
 import { useW3, DID } from "@w3ui/react"
-import { CheckCircleIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import DefaultLoader from "@/components/Loader"
 import { useState } from "react"
 import SidebarLayout from "@/components/SidebarLayout"
+import { toast } from 'react-hot-toast'
 import { ucantoast } from "@/toaster"
+import { ArrowPathIcon } from "@heroicons/react/20/solid"
 
 interface PlanSectionProps {
   planID: DID
@@ -94,10 +96,53 @@ function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }:
   )
 }
 
-export default function Plans () {
+function Plans () {
+  const [{ client, accounts }] = useW3()
+  const account = accounts[0]
+  const [customerPortalLink, setCustomerPortalLink] = useState<string>()
+  const [generatingCustomerPortalLink, setGeneratingCustomerPortalLink] = useState(false)
+  async function generateCustomerPortalLink () {
+    if (!client) {
+      toast.error('Error creating Stripe customer portal session, please see the console for more details.')
+      console.debug(`w3up client is ${client}, could not generate customer portal link`)
+    } else if (!account) {
+      toast.error('Error creating Stripe customer portal session, please see the console for more details.')
+      console.debug(`w3up account is ${account}, could not generate customer portal link`)
+    } else {
+      setGeneratingCustomerPortalLink(true)
+      const result = await account.plan.createAdminSession(account.did(), location.href)
+      setGeneratingCustomerPortalLink(false)
+      if (result.ok) {
+        setCustomerPortalLink(result.ok.url)
+      } else {
+        toast.error('Error creating Stripe customer portal session, please see the console for more details.')
+        console.debug("Error creating admin session:", result.error)
+      }
+    }
+  }
   return (
-    <SidebarLayout>
-      <div className='py-8 flex flex-col items-center'>
+    <div className='py-8 flex flex-col items-center space-y-8'>
+      <div className='flex flex-col items-center'>
+        <h1 className='text-2xl font-mono mb-8 font-bold'>Billing</h1>
+        {customerPortalLink ? (
+          <div className='flex flex-row'>
+            <button className='w3ui-button-colors w3ui-button-size p-2 mr-2' onClick={generateCustomerPortalLink} disabled={generatingCustomerPortalLink}>
+              <ArrowPathIcon className={`h-5 w-5 text-white ${generatingCustomerPortalLink ? 'animate-spin' : ''}`} />
+            </button>
+            <a className='w3ui-button' href={customerPortalLink} target="_blank" rel="noopener noreferrer">
+              Open Customer Portal
+              <ArrowTopRightOnSquareIcon className='relative inline h-5 w-4 ml-1 -mt-1' />
+            </a>
+          </div>
+        ) : (
+          generatingCustomerPortalLink ? (
+            <DefaultLoader className='h-8 w-8' />
+          ) : (
+            <button className='w3ui-button' onClick={generateCustomerPortalLink}>Update Billing Information</button>
+          )
+        )}
+      </div>
+      <div className='flex flex-col items-center'>
         <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
         <p className='mb-4'>Pick the price plan that works for you.</p>
         <div className='flex flex-col space-y-2 xl:flex-row xl:space-y-0 xl:space-x-2'>
@@ -106,6 +151,14 @@ export default function Plans () {
           <PlanSection planID={PLANS['business']} planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
         </div>
       </div>
+    </div>
+  )
+}
+
+export default function PlansPage () {
+  return (
+    <SidebarLayout>
+      <Plans />
     </SidebarLayout>
   )
 }
