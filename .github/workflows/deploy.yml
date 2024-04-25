@@ -15,6 +15,8 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     environment:
       name: ${{ (github.ref_name == 'main') && 'staging' || format('preview-{0}', github.ref_name) }}
       url: ${{ (github.ref_name == 'main') && 'https://staging.console.web3.storage/' || steps.cloudflare_url.outputs.stdout }}
@@ -81,6 +83,9 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Changelog
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       releases_created: ${{ steps.tag-release.outputs.releases_created }}
     steps:
