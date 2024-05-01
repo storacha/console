@@ -1,7 +1,7 @@
 'use client'
 
 import { usePlan } from "@/hooks"
-import { useW3, DID, Client, AccountDID } from "@w3ui/react"
+import { useW3, DID, Client, AccountDID, Account } from "@w3ui/react"
 import { ArrowTopRightOnSquareIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import DefaultLoader from "@/components/Loader"
 import { useState } from "react"
@@ -15,10 +15,11 @@ import * as Access from "@web3-storage/access/access"
 import * as DidMailto from "@web3-storage/did-mailto"
 import * as Ucanto from "@ucanto/core"
 import { Plan } from "@web3-storage/capabilities"
-import { H2 } from "@/components/Text"
-import { Capability, Delegation } from "@ucanto/interface"
+import { H1, H2 } from "@/components/Text"
+import { Ability, Capability, Delegation } from "@ucanto/interface"
 
 interface PlanSectionProps {
+  account: Account
   planID: DID
   planName: string
   flatFee: number
@@ -40,9 +41,8 @@ const planRanks: Record<string, number> = {
 
 const buttonText = (currentPlan: string, newPlan: string) => (planRanks[currentPlan] > planRanks[newPlan]) ? 'Downgrade' : 'Upgrade'
 
-function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }: PlanSectionProps) {
-  const [{ accounts }] = useW3()
-  const { data: plan, setPlan, isLoading } = usePlan(accounts[0])
+function PlanSection ({ account, planID, planName, flatFee, flatFeeAllotment, perGbFee }: PlanSectionProps) {
+  const { data: plan, setPlan, isLoading } = usePlan(account)
   const currentPlanID = plan?.product
   const isCurrentPlan = currentPlanID === planID
   const [isUpdatingPlan, setIsUpdatingPlan] = useState(false)
@@ -84,12 +84,13 @@ function PlanSection ({ planID, planName, flatFee, flatFeeAllotment, perGbFee }:
           <div>Additional at ${perGbFee}/GB per month</div>
         </div>
       </div>
+      <div className='flex-grow'></div>
       {
         (isLoading || isUpdatingPlan || !currentPlanID) ? (
           <DefaultLoader className='h-6 w-6' />
         ) : (
           isCurrentPlan ? (
-            <div className='h-4'>
+            <div className='h-7'>
               {(currentPlanID === planID) && (
                 <h5 className='font-bold'>Current Plan</h5>
               )}
@@ -114,46 +115,62 @@ function getCapabilities (delegations: Delegation[]): Capability[] {
   }
 }
 
-function findAccountsICanAdminister (client: Client): AccountDID[] {
-  return Array.from(new Set(
-    getCapabilities(client.proofs([{ can: Plan.createAdminSession.can, with: 'ucan:*' }]))
+function doesCapabilityGrantAbility (capability: Ability, ability: Ability) {
+  if (capability === ability) {
+    return true
+  } else if (capability.endsWith('/*')) {
+    return ability.startsWith(capability.slice(0, -1))
+  } else {
+    return false
+  }
+}
+
+function findAccountResourcesWithCapability (client: Client, ability: Ability): Set<AccountDID> {
+  return new Set(
+    getCapabilities(client.proofs([{ can: ability, with: 'ucan:*' }]))
       .filter(cap => {
-        const hasCapability = cap.can === Plan.createAdminSession.can || cap.can === 'plan/*' || '*'
         const isAccount = cap.with.startsWith('did:mailto:')
-        return hasCapability && isAccount
+        return doesCapabilityGrantAbility(cap.can, ability) && isAccount
       })
       .map(cap => cap.with) as AccountDID[]
-  ))
+  )
 }
 
 interface DelegationPlanCreateAdminSessionInput {
   email: string
 }
-function DelegatePlanCreateAdminSessionForm ({ className = '' }: { className?: string }) {
-  const [{ client, accounts }] = useW3()
+
+function DelegatePlanCreateAdminSessionForm ({ className = '', account }: { className?: string, account: Account }) {
+  const [{ client }] = useW3()
 
   const { register, handleSubmit } = useForm<DelegationPlanCreateAdminSessionInput>()
   const onSubmit: SubmitHandler<DelegationPlanCreateAdminSessionInput> = async (data) => {
-    const currentAccount = accounts[0]
-    if (client && currentAccount) {
+    if (client && account) {
       const email = data.email as `${string}@${string}`
+      const capabilities = [
+        {
+          with: account.did(),
+          can: Plan.createAdminSession.can
+        },
+        {
+          with: account.did(),
+          can: Plan.get.can
+        },
+        {
+          with: account.did(),
+          can: Plan.set.can
+        }
+      ]
       await ucantoast(Access.delegate(client.agent, {
         delegations: [
           await delegate({
             issuer: client.agent.issuer,
             audience: Ucanto.DID.parse(DidMailto.fromEmail(email)),
-            capabilities: [
-              {
-                with: currentAccount.did(),
-                can: Plan.createAdminSession.can
-              }
-            ],
+            // @ts-expect-error not sure why TS doesn't like this but I'm pretty sure it's safe to ignore
+            capabilities,
             // TODO default to 1 year for now, but let's add UI for this soon
             lifetimeInSeconds: 60 * 60 * 24 * 365,
-            proofs: client.proofs([{
-              with: currentAccount.did(),
-              can: Plan.createAdminSession.can
-            }])
+            proofs: client.proofs(capabilities)
           })
 
         ]
@@ -164,22 +181,12 @@ function DelegatePlanCreateAdminSessionForm ({ className = '' }: { className?: s
       })
     }
   }
-  //console.log("PROOFS", client?.proofs().map(p => JSON.parse(JSON.stringify(p))))
-
-  /*client?.proofs().reduce((m, delegation) => {
-    const capabilities = delegation.capabilities.filter(cap => cap.can === '*' || cap.can === 'plan/*' || cap.can === 'plan/create-admin-session')
-    if (capabilities.length > 0){
-      console.log("CAPS", capabilities, JSON.parse(JSON.stringify(delegation)))
-    }
-    return m.concat()
-  }, [])*/
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col space-y-2 ${className}`}>
       <label className='w-full'>
-        <H2>Delegate billing admin portal access</H2>
+        <H2>Delegate access to {DidMailto.toEmail(account.did())}'s<br />billing admin portal</H2>
         <input className='text-black py-2 px-2 rounded block w-full border border-gray-800'
-          placeholder='Email' type='email'
+          placeholder='To Email' type='email'
           {...register('email')} />
       </label>
       <input className='w3ui-button' type='submit' value='Delegate' />
@@ -197,13 +204,13 @@ function CustomerPortalLink ({ did }: { did: AccountDID }) {
             <ArrowPathIcon className={`h-5 w-5 text-white ${generatingCustomerPortalLink ? 'animate-spin' : ''}`} />
           </button>
           <a className='w3ui-button' href={customerPortalLink} target="_blank" rel="noopener noreferrer">
-            Open Customer Portal
+            Open Billing Portal
             <ArrowTopRightOnSquareIcon className='relative inline h-5 w-4 ml-1 -mt-1' />
           </a>
         </div>
       ) : (
         <button className='w3ui-button' onClick={() => generateCustomerPortalLink(did)} disabled={generatingCustomerPortalLink}>
-          Access Customer Portal for {DidMailto.toEmail(did as DidMailto.DidMailto)}
+          Generate Link
           {generatingCustomerPortalLink &&
             <ArrowPathIcon className='inline ml-2 h-5 w-5 text-white animate-spin' />
           }
@@ -227,7 +234,6 @@ function useCustomerPortalLink () {
       console.debug(`w3up account is ${account}, could not generate customer portal link`)
     } else {
       setGeneratingCustomerPortalLink(true)
-      console.log("PROFOS", JSON.parse(JSON.stringify(client.proofs([{ can: Plan.createAdminSession.can, with: did }]))))
       const result = await account.plan.createAdminSession(did, location.href)
       setGeneratingCustomerPortalLink(false)
       if (result.ok) {
@@ -241,48 +247,47 @@ function useCustomerPortalLink () {
   return { customerPortalLink, generateCustomerPortalLink, generatingCustomerPortalLink }
 }
 
+function AccountAdmin ({ account }: { account: Account }) {
+  return (
+    <div className='flex flex-col space-y-2'>
+      <H1>{DidMailto.toEmail(account.did())}</H1>
+      <div>
+        <H2>Pick a Plan</H2>
+        <div className='flex flex-row xl:space-x-1'>
+          <PlanSection account={account} planID={PLANS['starter']} planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
+          <PlanSection account={account} planID={PLANS['lite']} planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
+          <PlanSection account={account} planID={PLANS['business']} planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
+        </div>
+      </div>
+      <div>
+        <H2>Access Billing Admin Portal</H2>
+        <CustomerPortalLink did={account.did()} />
+      </div>
+      <DelegatePlanCreateAdminSessionForm account={account} className='w-96' />
+    </div>
+  )
+}
+
 function Plans () {
   const [{ client, accounts }] = useW3()
   const account = accounts[0]
 
-  const [claimingDelegations, setClaimingDelegations] = useState(false)
-  async function claimDelegations () {
-    try {
-      setClaimingDelegations(true)
-      await client?.capability.access.claim()
-      await client?.capability.access.claim({ audience: account.did() })
-    } finally {
-      setClaimingDelegations(false)
-    }
-  }
-  const billingAdminAccounts: AccountDID[] = client ? findAccountsICanAdminister(client) : []
-  console.log(billingAdminAccounts)
+  const billingAdminAccounts: Set<AccountDID> = client ? findAccountResourcesWithCapability(client, Plan.createAdminSession.can) : new Set()
+  const planAdminAccounts: Set<AccountDID> = client ? findAccountResourcesWithCapability(client, Plan.set.can) : new Set()
+  const adminableAccounts: AccountDID[] = Array.from(new Set<AccountDID>([...billingAdminAccounts, ...planAdminAccounts]))
+
   return (
-    <div className='py-8 flex flex-col items-center space-y-8'>
-      <div className='flex flex-col items-center'>
-        <h1 className='text-2xl font-mono mb-8 font-bold'>Billing</h1>
-        <CustomerPortalLink did={account.did()} />
-        <DelegatePlanCreateAdminSessionForm className='my-4' />
-        <div>
-          {/*<button className='w3ui-button' onClick={claimDelegations} disabled={claimingDelegations}>
-            Check For Billing Admin Delegations
-            {claimingDelegations &&
-              <ArrowPathIcon className='inline ml-2 h-5 w-5 text-white animate-spin' />
-            }
-          </button>
-          */}
-          {billingAdminAccounts.map(did => (<CustomerPortalLink did={did} key={did} />))}
-        </div>
-      </div>
-      <div className='flex flex-col items-center'>
-        <h1 className='text-2xl font-mono mb-8 font-bold'>Plans</h1>
-        <p className='mb-4'>Pick the price plan that works for you.</p>
-        <div className='flex flex-col space-y-2 xl:flex-row xl:space-y-0 xl:space-x-2'>
-          <PlanSection planID={PLANS['starter']} planName='Starter' flatFee={0} flatFeeAllotment={5} perGbFee={0.15} />
-          <PlanSection planID={PLANS['lite']} planName='Lite' flatFee={10} flatFeeAllotment={100} perGbFee={0.05} />
-          <PlanSection planID={PLANS['business']} planName='Business' flatFee={100} flatFeeAllotment={2000} perGbFee={0.03} />
-        </div>
-      </div>
+    <div className='py-8 flex flex-col space-y-12'>
+      <h1 className='text-2xl font-mono font-bold'>Billing</h1>
+      <AccountAdmin account={account} />
+      {adminableAccounts.map(did => (client && (did !== account.did()) ? (
+        <AccountAdmin key={did}
+          account={new Account({
+            id: did as DidMailto.DidMailto,
+            agent: client.agent,
+            proofs: []
+          })} />
+      ) : null))}
     </div>
   )
 }
