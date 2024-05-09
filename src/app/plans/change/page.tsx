@@ -14,7 +14,7 @@ import { delegate } from "@ucanto/core/delegation"
 import * as Access from "@web3-storage/access/access"
 import * as DidMailto from "@web3-storage/did-mailto"
 import * as Ucanto from "@ucanto/core"
-import { Plan } from "@web3-storage/capabilities"
+import { Plan, Access as AccessCaps } from "@web3-storage/capabilities"
 import { H1, H2 } from "@/components/Text"
 import { Ability, Capability, Delegation } from "@ucanto/interface"
 
@@ -247,10 +247,16 @@ function useCustomerPortalLink () {
   return { customerPortalLink, generateCustomerPortalLink, generatingCustomerPortalLink }
 }
 
-function AccountAdmin ({ account }: { account: Account }) {
+interface AccountAdminProps {
+  account: Account
+  accountNamePrefix?: string
+}
+
+function AccountAdmin ({ account, accountNamePrefix = '' }: AccountAdminProps) {
+  const canDelegate = account.agent.proofs([{ can: AccessCaps.delegate.can, with: account.did() }]).length > 0
   return (
     <div className='flex flex-col space-y-2'>
-      <H1>{DidMailto.toEmail(account.did())}</H1>
+      <H1>{accountNamePrefix}{DidMailto.toEmail(account.did())}</H1>
       <div>
         <H2>Pick a Plan</H2>
         <div className='flex flex-row xl:space-x-1'>
@@ -263,7 +269,7 @@ function AccountAdmin ({ account }: { account: Account }) {
         <H2>Access Billing Admin Portal</H2>
         <CustomerPortalLink did={account.did()} />
       </div>
-      <DelegatePlanCreateAdminSessionForm account={account} className='w-96' />
+      {canDelegate && <DelegatePlanCreateAdminSessionForm account={account} className='w-96' />}
     </div>
   )
 }
@@ -275,13 +281,14 @@ function Plans () {
   const billingAdminAccounts: Set<AccountDID> = client ? findAccountResourcesWithCapability(client, Plan.createAdminSession.can) : new Set()
   const planAdminAccounts: Set<AccountDID> = client ? findAccountResourcesWithCapability(client, Plan.set.can) : new Set()
   const adminableAccounts: AccountDID[] = Array.from(new Set<AccountDID>([...billingAdminAccounts, ...planAdminAccounts]))
-
+  const hasAdminableAccounts = adminableAccounts.length > 0
   return (
     <div className='py-8 flex flex-col space-y-12'>
       <h1 className='text-2xl font-mono font-bold'>Billing</h1>
-      <AccountAdmin account={account} />
+      <AccountAdmin account={account} accountNamePrefix={hasAdminableAccounts ? 'Your Account: ' : ''} />
       {adminableAccounts.map(did => (client && (did !== account.did()) ? (
         <AccountAdmin key={did}
+          accountNamePrefix={hasAdminableAccounts ? 'External Account: ' : ''}
           account={new Account({
             id: did as DidMailto.DidMailto,
             agent: client.agent,
