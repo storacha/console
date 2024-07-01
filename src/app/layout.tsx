@@ -4,7 +4,6 @@ import Provider from '@/components/W3UIProvider'
 import Toaster from '@/components/Toaster'
 import { Provider as MigrationsProvider } from '@/components/MigrationsProvider'
 
-
 export const metadata: Metadata = {
   title: 'w3up console',
   description: 'web3.storage management console',
@@ -20,7 +19,7 @@ export default function RootLayout ({
       <body className='bg-grad min-h-screen'>
         <Provider>
           <MigrationsProvider>
-            <>{children}</>
+            {children}
           </MigrationsProvider>
         </Provider>
         <Toaster />

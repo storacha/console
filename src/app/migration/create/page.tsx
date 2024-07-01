@@ -4,11 +4,12 @@ import { MouseEventHandler, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { H1, H2 } from '@/components/Text'
-import { MigrationConfiguration, MigrationSource, useMigrations } from '@/components/MigrationsProvider'
+import { useMigrations } from '@/components/MigrationsProvider'
 import { DIDKey, useW3 } from '@w3ui/react'
-import { NFTStorage } from 'nft.storage'
-import { Web3Storage } from 'web3.storage'
+import * as NFTStorageMigrator from '@/lib/migrations/nft-storage'
+import * as Web3StorageMigrator from '@/lib/migrations/web3-storage'
 import { DidIcon } from '@/components/DidIcon'
+import { MigrationConfiguration, MigrationSource } from '@/lib/migrations/api'
 
 interface WizardProps {
   config: Partial<MigrationConfiguration>
@@ -27,13 +28,14 @@ export default function CreateMigrationPage (): JSX.Element {
   const [step, setStep] = useState(0)
   const [config, setConfig] = useState<Partial<MigrationConfiguration>>({})
   const router = useRouter()
-  const [, { createMigration }] = useMigrations()
+  const [, { createMigration, startMigration }] = useMigrations()
 
   const Component = steps[step]
   const handlePrev = () => setStep(Math.max(0, step - 1))
   const handleNext = (c: Partial<MigrationConfiguration>) => {
     if (step === steps.length - 1) {
       const { id } = createMigration(c as MigrationConfiguration)
+      startMigration(id)
       router.replace(`/migration/${id}`)
     } else {
       setConfig(c)
@@ -62,7 +64,7 @@ function ChooseSource ({ config, onNext }: WizardProps) {
         <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline mr-4 ${source === 'classic.nft.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('classic.nft.storage')} title='Migrate from NFT.Storage (Classic)'>
           <img src='/nftstorage-logo.png' width='360' />
         </button>
-        <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='Migrate from Web3.Storage (Old)'>
+        <button className={`bg-white/60 opacity-60 rounded-lg shadow-md p-8 ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='COMING SOON! Migrate from Web3.Storage (Old)' disabled={true}>
           <img src='/web3storage-logo.png' width='360' />
         </button>
       </div>
@@ -83,25 +85,12 @@ function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
     setError('')
 
     try {
-      switch (config.source) {
-        case 'classic.nft.storage': {
-          const client = new NFTStorage({ token })
-          try {
-            await client.status(crypto.randomUUID())
-          } catch (err: any) {
-            if (!err.message.startsWith('Invalid CID')) {
-              throw err
-            }
-          }
-          break
-        }
-        case 'old.web3.storage': {
-          const client = new Web3Storage({ token })
-          console.log('list response', await client.list().next())
-          break
-        }
-        default:
-          throw new Error(`unknown data source: ${config.source}`)
+      if (config.source === 'classic.nft.storage') {
+        await NFTStorageMigrator.checkToken(token)
+      } else if (config.source === 'old.web3.storage') {
+        await Web3StorageMigrator.checkToken(token)
+      } else {
+        throw new Error(`unknown data source: ${config.source}`)
       }
     } catch (err: any) {
       console.error(err)
@@ -152,6 +141,7 @@ function ChooseTargetSpace ({ config, onNext, onPrev }: WizardProps) {
       <div className='max-w-lg mb-4 border rounded-md border-zinc-700'>
         {spaces.map(s => (
           <button
+            key={s.did()}
             type='button'
             className={`flex flex-row items-start gap-2 p-3 text-white text-left border-b last:border-0 border-zinc-700 w-full ${s.did() === space ? 'bg-gray-900/60' : 'bg-gray-900/30 hover:bg-gray-900/50'}`}
             onClick={() => setSpace(s.did())}>

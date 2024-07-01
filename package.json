@@ -35,6 +35,7 @@
     "multiformats": "^12.1.3",
     "next": "^13.5.4",
     "nft.storage": "^7.1.1",
+    "p-retry": "^6.2.0",
     "react": "latest",
     "react-dom": "latest",
     "react-hook-form": "^7.51.3",

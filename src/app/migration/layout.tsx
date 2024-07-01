@@ -7,7 +7,7 @@ interface LayoutProps extends PropsWithChildren {
   }
 }
 
-export default function Layout ({children}: LayoutProps): ReactNode {
+export default function Layout ({ children }: LayoutProps): ReactNode {
   return (
     <SidebarLayout>
       {children}
