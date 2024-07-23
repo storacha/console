@@ -58,14 +58,13 @@ function ChooseSource ({ config, onNext }: WizardProps) {
       <H1>Create a new migration</H1>
       <div className='bg-white my-4 p-5 rounded-2xl border border-hot-red font-epilogue'>
         <p className='mb-8'>This tool allows data to be migrated from a previous provider to one of your spaces.</p>
-
         <H2>Where from?</H2>
         <p className='mb-4'>Pick a storage service you want to migrate data from.</p>
         <div className='mb-4'>
           <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline mr-4 ${source === 'classic.nft.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('classic.nft.storage')} title='Migrate from NFT.Storage (Classic)'>
             <img src='/nftstorage-logo.png' width='350' />
           </button>
-          <button className={`bg-white/60 opacity-60 rounded-lg shadow-md p-8 ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='COMING SOON! Migrate from Web3.Storage (Old)' disabled={true}>
+          <button className={`bg-white/60 rounded-lg shadow-md p-8 ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='Migrate from Web3.Storage (Old)' disabled={true}>
             <img src='/web3storage-logo.png' width='350' />
           </button>
         </div>
