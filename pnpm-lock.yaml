@@ -2885,8 +2885,8 @@ packages:
   one-webcrypto@1.0.3:
     resolution: {integrity: sha512-fu9ywBVBPx0gS9K0etIROTiCkvI5S1TDjFsYFb3rC1ewFxeOqsbzq7aIMBHsYfrTHBcGXJaONXXjTl8B01cW1Q==}
 
-  one-webcrypto@https://codeload.github.com/web3-storage/one-webcrypto/tar.gz/5148cd14d5489a8ac4cd38223870e02db15a2382:
-    resolution: {tarball: https://codeload.github.com/web3-storage/one-webcrypto/tar.gz/5148cd14d5489a8ac4cd38223870e02db15a2382}
+  one-webcrypto@git+https://git@github.com:web3-storage/one-webcrypto.git#5148cd14d5489a8ac4cd38223870e02db15a2382:
+    resolution: {commit: 5148cd14d5489a8ac4cd38223870e02db15a2382, repo: git@github.com:web3-storage/one-webcrypto.git, type: git}
     version: 1.0.3
 
   onetime@5.1.2:
@@ -4707,7 +4707,7 @@ snapshots:
       bigint-mod-arith: 3.3.1
       conf: 11.0.2
       multiformats: 12.1.3
-      one-webcrypto: https://codeload.github.com/web3-storage/one-webcrypto/tar.gz/5148cd14d5489a8ac4cd38223870e02db15a2382
+      one-webcrypto: git+https://git@github.com:web3-storage/one-webcrypto.git#5148cd14d5489a8ac4cd38223870e02db15a2382
       p-defer: 4.0.1
       type-fest: 4.18.2
       uint8arrays: 4.0.9
@@ -4728,7 +4728,7 @@ snapshots:
       bigint-mod-arith: 3.3.1
       conf: 11.0.2
       multiformats: 12.1.3
-      one-webcrypto: https://codeload.github.com/web3-storage/one-webcrypto/tar.gz/5148cd14d5489a8ac4cd38223870e02db15a2382
+      one-webcrypto: git+https://git@github.com:web3-storage/one-webcrypto.git#5148cd14d5489a8ac4cd38223870e02db15a2382
       p-defer: 4.0.1
       type-fest: 4.18.2
       uint8arrays: 4.0.9
@@ -7040,7 +7040,7 @@ snapshots:
 
   one-webcrypto@1.0.3: {}
 
-  one-webcrypto@https://codeload.github.com/web3-storage/one-webcrypto/tar.gz/5148cd14d5489a8ac4cd38223870e02db15a2382: {}
+  one-webcrypto@git+https://git@github.com:web3-storage/one-webcrypto.git#5148cd14d5489a8ac4cd38223870e02db15a2382: {}
 
   onetime@5.1.2:
     dependencies:

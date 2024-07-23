@@ -5,8 +5,7 @@ import * as Claims from '@web3-storage/content-claims/client'
 import { CarBlockIterator } from '@ipld/car'
 import { LinkIndexer } from 'linkdex'
 import { MigrationSourceConfiguration, Shard, Upload } from './api'
-
-const carCode = 0x0202
+import { carCode } from './constants'
 
 export const checkToken = async (token: string) => {
   const client = new NFTStorage({ token })

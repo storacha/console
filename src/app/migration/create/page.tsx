@@ -64,7 +64,7 @@ function ChooseSource ({ config, onNext }: WizardProps) {
         <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline mr-4 ${source === 'classic.nft.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('classic.nft.storage')} title='Migrate from NFT.Storage (Classic)'>
           <img src='/nftstorage-logo.png' width='360' />
         </button>
-        <button className={`bg-white/60 opacity-60 rounded-lg shadow-md p-8 ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='COMING SOON! Migrate from Web3.Storage (Old)' disabled={true}>
+        <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='Migrate from Web3.Storage (Old)'>
           <img src='/web3storage-logo.png' width='360' />
         </button>
       </div>

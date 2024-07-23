@@ -4,6 +4,7 @@ import * as StoreCapabilities from '@web3-storage/capabilities/store'
 import * as UploadCapabilities from '@web3-storage/capabilities/upload'
 import { UploadsSource, Shard, Upload, MigrationSource, MigrationSourceConfiguration } from './api'
 import { NFTStorageMigrator } from './nft-storage'
+import { Web3StorageMigrator } from './web3-storage'
 
 const REQUEST_RETRIES = 3
 
@@ -11,6 +12,8 @@ export const create = (source: MigrationSource, config: MigrationSourceConfigura
   switch (source) {
     case 'classic.nft.storage':
       return new NFTStorageMigrator(config)
+    case 'old.web3.storage':
+      return new Web3StorageMigrator(config)
     default:
       throw new Error(`not implemented`)
   }
