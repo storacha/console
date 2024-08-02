@@ -15,7 +15,7 @@ interface SidebarComponentProps {
 
 function Sidebar ({ sidebar = <div></div> }: SidebarComponentProps): JSX.Element {
   return (
-    <nav className='flex-none w-64 bg-gray-900 text-white px-4 pb-4 border-r border-gray-800 h-screen'>
+    <nav className='flex-none w-64 bg-gray-900 text-white px-4 pb-4 border-r border-gray-800 min-h-screen'>
       <div className='flex flex-col justify-between h-full'>
         {sidebar}
         <div className='flex flex-col items-center'>
@@ -39,7 +39,7 @@ export function DefaultLayout ({ sidebar = <div></div>, children }: LayoutCompon
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className='flex min-h-full w-full text-white'>
+    <div className='flex min-h-screen w-full text-white'>
       {/* dialog sidebar for narrow browsers */}
       <Transition.Root show={sidebarOpen} >
         <Dialog onClose={() => setSidebarOpen(false)} as='div' className='relative z-50'>
@@ -64,7 +64,7 @@ export function DefaultLayout ({ sidebar = <div></div>, children }: LayoutCompon
               leaveTo="-translate-x-full">
               <Dialog.Panel>
                 <XMarkIcon className='text-white w-6 h-6 fixed top-2 -right-8' onClick={() => setSidebarOpen(false)} />
-                <Sidebar sidebar={sidebar} />
+              <Sidebar sidebar={sidebar} />
               </Dialog.Panel>
             </Transition.Child>
           </div>
