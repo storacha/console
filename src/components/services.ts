@@ -16,7 +16,7 @@ export const servicePrincipal = DID.parse(
 export const serviceConnection = connect<Service>({
   id: servicePrincipal,
   codec: CAR.outbound,
-  channel: HTTP.open<any>({
+  channel: HTTP.open({
     url: serviceURL,
     method: 'POST',
   }),
