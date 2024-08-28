@@ -20,7 +20,7 @@ export function PlanGate ({ children }: { children: ReactNode }): ReactNode {
         <div className='my-4'><Web3StorageLogo /></div>
         <div className="max-w-screen-lg text-zinc-950 text-center bg-white/20 rounded-lg px-1 py-1">
           <div className='px-6 py-6 lg:px-24'>
-            <h1 className="my-4 font-bold">Welcome {accounts[0]?.toEmail()}!</h1>
+            <h1 className="my-4 font-bold">Welcome, {accounts[0]?.toEmail()}!</h1>
             <p className='my-4'>
               To get started with w3up you&apos;ll need to sign up for a subscription. If you choose
               the free plan we won&apos;t charge your credit card, but we do need a card on file
