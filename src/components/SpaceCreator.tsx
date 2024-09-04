@@ -52,7 +52,12 @@ export function SpaceCreatorForm ({
       const space = await client.createSpace(name)
 
       const provider = (process.env.NEXT_PUBLIC_W3UP_PROVIDER || 'did:web:web3.storage') as DID<'web'>
-      await account.provision(space.did(), { provider })
+      const result = await account.provision(space.did(), { provider })
+      if (result.error) {
+        setSubmitted(false)
+        setCreated(false)
+        throw result.error
+      }
 
       // MUST do this before creating recovery, as it creates necessary authorizations
       await space.save()
