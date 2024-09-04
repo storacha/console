@@ -56,7 +56,7 @@ export function SpaceCreatorForm ({
       if (result.error) {
         setSubmitted(false)
         setCreated(false)
-        throw result.error
+        throw new Error(`failed provisioning space: ${space.did()} with provider: ${provider}`, { cause: result.error })
       }
 
       // MUST do this before creating recovery, as it creates necessary authorizations
