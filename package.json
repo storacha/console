@@ -9,6 +9,7 @@
     "start": "next start",
     "test": "pnpm lint",
     "lint": "next lint",
+    "typecheck": "tsc",
     "pages:build": "pnpm dlx @cloudflare/next-on-pages@1",
     "pages:watch": "pnpm @cloudflare/next-on-pages@1 --watch",
     "pages:dev": "pnpm wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat"
