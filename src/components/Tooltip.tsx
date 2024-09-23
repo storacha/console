@@ -12,8 +12,7 @@ function Tooltip({ text, title, children }: { text: string[], title?: string, ch
             {children}
             {visible && (
                 <div className="absolute left-1/2 bottom-full transform -translate-x-1/2 bg-gray-800 text-white p-1.5 rounded whitespace-pre-wrap z-10">
-                    {title && <strong>{title}</strong>}
-                    <br />
+                    {title && <><strong>{title}</strong><br /></>}
                     {text.join('\n')}
                 </div>
             )}

@@ -91,8 +91,11 @@ export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
           'upload/*',
           'access/*',
           'usage/*',
+          // @ts-expect-error (FIXME: https://github.com/storacha/w3up/issues/1554)
           'filecoin/*',
-        ],
+        ], {
+          expiration: Infinity
+        }
       )
 
       const sharingResult = await client.capability.access.delegate({

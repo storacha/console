@@ -18,7 +18,7 @@ export default function HomePage () {
 
 function SpacePage (): ReactNode {
   const [{ spaces }] = useW3()
-  
+
   if (spaces.length === 0) {
     return <div></div>
   }
