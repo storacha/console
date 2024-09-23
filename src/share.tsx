@@ -61,24 +61,64 @@ export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
   }, [client, spaceDID])
 
   async function shareViaEmail(email: string): Promise<void> {
-    try {
-      if (!client) {
-        throw new Error(`Client not found`)
-      }
+    if (!client) {
+      throw new Error(`Client not found`)
+    }
 
+    const currentSpace = client.agent.currentSpace()
+    try {
       const space = client.spaces().find(s => s.did() === spaceDID)
       if (!space) {
         throw new Error(`Could not find space to share`)
       }
 
       const delegatedEmail = DIDMailTo.email(email)
-      const delegation = await client.shareSpace(delegatedEmail, space.did())
+
+      // FIXME (fforbeck): enable shareSpace function call after @w3ui/react lib is updated to v2.4.0 and the issue with blobs are solved
+      // const delegation = await client.shareSpace(delegatedEmail, space.did())
+
+      // Make sure the agent is using the shared space before delegating
+      await client.agent.setCurrentSpace(spaceDID)
+
+      // Delegate capabilities to the delegate account to access the **current space**
+      const delegation = await client.createDelegation(
+        {
+          did: () => DIDMailTo.fromEmail(delegatedEmail),
+        },
+        [
+          'space/*',
+          'store/*',
+          'upload/*',
+          'access/*',
+          'usage/*',
+          'filecoin/*',
+        ],
+      )
+
+      const sharingResult = await client.capability.access.delegate({
+        space: spaceDID,
+        delegations: [delegation],
+      })
+
+      if (sharingResult.error) {
+        throw new Error(
+          `failed to share space with ${delegatedEmail}: ${sharingResult.error.message}`,
+          {
+            cause: sharingResult.error,
+          }
+        )
+      }
 
       const next = { email: delegatedEmail, capabilities: delegation.capabilities.map(c => c.can) }
       updateSharedEmails([next])
       setValue('')
     } catch (err) {
       console.error(err)
+    } finally {
+      // Reset to the original space if it was different
+      if (currentSpace && currentSpace !== spaceDID) {
+        await client.agent.setCurrentSpace(currentSpace)
+      }
     }
   }
 
@@ -94,16 +134,16 @@ export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
     }
 
     try {
-        const delegation = await client.createDelegation(audience, ['*'], {
-          expiration: Infinity,
-        })
-        const archiveRes = await delegation.archive()
-        if (archiveRes.error) {
-          throw new Error('failed to archive delegation', { cause: archiveRes.error })
-        }
-        const blob = new Blob([archiveRes.ok])
-        const url = URL.createObjectURL(blob)
-        setDownloadUrl(url)
+      const delegation = await client.createDelegation(audience, ['*'], {
+        expiration: Infinity,
+      })
+      const archiveRes = await delegation.archive()
+      if (archiveRes.error) {
+        throw new Error('failed to archive delegation', { cause: archiveRes.error })
+      }
+      const blob = new Blob([archiveRes.ok])
+      const url = URL.createObjectURL(blob)
+      setDownloadUrl(url)
     } catch (err: any) {
       throw new Error(err.message ?? err, { cause: err })
     }
