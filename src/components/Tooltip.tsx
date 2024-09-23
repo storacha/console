@@ -7,23 +7,13 @@ function Tooltip({ text, title, children }: { text: string[], title?: string, ch
         <span
             onMouseEnter={() => setVisible(true)}
             onMouseLeave={() => setVisible(false)}
-            style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            className="relative cursor-pointer flex items-center"
         >
             {children}
             {visible && (
-                <div style={{
-                    position: 'absolute',
-                    left: '50%',
-                    bottom: '100%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: '#333',
-                    color: '#fff',
-                    padding: '5px',
-                    borderRadius: '3px',
-                    whiteSpace: 'pre-wrap',
-                    zIndex: 1
-                }}>
-                    {title && <strong>{title + '\n'}</strong>}
+                <div className="absolute left-1/2 bottom-full transform -translate-x-1/2 bg-gray-800 text-white p-1.5 rounded whitespace-pre-wrap z-10">
+                    {title && <strong>{title}</strong>}
+                    <br />
                     {text.join('\n')}
                 </div>
             )}

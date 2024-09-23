@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useW3 } from '@w3ui/react'
+import { SpaceDID, useW3 } from '@w3ui/react'
 import { extract } from '@ucanto/core/delegation'
 import type { PropsWithChildren } from 'react'
 import type { Delegation } from '@ucanto/interface'
@@ -23,7 +23,7 @@ function isDID(value: string): boolean {
   try {
     DID.parse(value.trim())
     return true
-  } catch (err) {
+  } catch {
     return false
   }
 }
@@ -33,22 +33,30 @@ function isEmail(value: string): boolean {
   return !isDID(value) && emailRegex.test(value)
 }
 
-export function ShareSpace({spaceDID}: {spaceDID: string}): JSX.Element {
+export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
   const [{ client }] = useW3()
   const [value, setValue] = useState('')
   const [downloadUrl, setDownloadUrl] = useState('')
   const [sharedEmails, setSharedEmails] = useState<{ email: string, capabilities: string[] }[]>([])
 
+  const updateSharedEmails = (delegations: { email: string, capabilities: string[] }[]) => {
+    setSharedEmails(prev => {
+      const newEmails = delegations.filter(d => !prev.some(item => item.email === d.email))
+      return [...prev, ...newEmails]
+    })
+  }
+
   useEffect(() => {
     if (client && spaceDID) {
-      // Find all delegations where the spaceDID is present
+      // Find all delegations via email where the spaceDID is present
       const delegations = client.delegations()
         .filter(d => d.capabilities.some(c => c.with === spaceDID))
+        .filter(d => d.audience.did().startsWith('did:mailto:'))
         .map(d => ({
           email: DIDMailTo.toEmail(DIDMailTo.fromString(d.audience.did())),
           capabilities: d.capabilities.map(c => c.can)
         }))
-      setSharedEmails(delegations)
+      updateSharedEmails(delegations)
     }
   }, [client, spaceDID])
 
@@ -67,12 +75,7 @@ export function ShareSpace({spaceDID}: {spaceDID: string}): JSX.Element {
       const delegation = await client.shareSpace(delegatedEmail, space.did())
 
       const next = { email: delegatedEmail, capabilities: delegation.capabilities.map(c => c.can) }
-      setSharedEmails(prev => {
-        if (prev.some(item => item.email === next.email)) {
-          return prev
-        }
-        return [...prev, next]
-      })
+      updateSharedEmails([next])
       setValue('')
     } catch (err) {
       console.error(err)
@@ -85,7 +88,7 @@ export function ShareSpace({spaceDID}: {spaceDID: string}): JSX.Element {
     let audience
     try {
       audience = DID.parse(input.trim())
-    } catch (err) {
+    } catch {
       setDownloadUrl('')
       return
     }
