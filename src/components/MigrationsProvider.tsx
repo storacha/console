@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react'
-import { Migration, MigrationConfiguration, MigrationID, MigrationProgress, MigrationSource, UploadsSource } from '@/lib/migrations/api'
+import { Migration, MigrationConfiguration, MigrationID, Progress } from '@/lib/migrations/api'
 import { useW3 } from '@w3ui/react'
 import * as Migrations from '@/lib/migrations'
 import { MigrationsStorage } from '@/lib/migrations/store'
@@ -80,7 +80,7 @@ export function Provider ({ children }: ProviderProps): ReactNode {
     const controller = new AbortController()
     runningMigrations[id] = controller
 
-    const uploads = Migrations.create(migration.source, {
+    const uploads = Migrations.createReader(migration.source, {
       token: migration.token,
       cursor: migration.progress?.cursor
     })
@@ -88,7 +88,7 @@ export function Provider ({ children }: ProviderProps): ReactNode {
       pending: await uploads.count(),
       succeeded: 0,
       failed: []
-    }) as MigrationProgress
+    }) as Progress
 
     Migrations.migrate({
       signal: controller.signal,

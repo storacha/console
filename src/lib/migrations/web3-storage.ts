@@ -3,20 +3,24 @@ import * as Link from 'multiformats/link'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { CarBlockIterator } from '@ipld/car'
 import { LinkIndexer } from 'linkdex'
-import { MigrationSourceConfiguration, Shard, Upload } from './api'
+import { DataSourceConfiguration, Shard, Upload } from './api'
 import { carCode } from './constants'
+
+export const id = 'old.web3.storage'
 
 export const checkToken = async (token: string) => {
   await new Web3Storage({ token }).list()[Symbol.asyncIterator]().next()
 }
 
-export class Web3StorageMigrator {
+export const createReader = (conf: DataSourceConfiguration) => new Reader(conf)
+
+class Reader {
   #token
   #cursor
   #client
   #started
 
-  constructor ({ token, cursor }: MigrationSourceConfiguration) {
+  constructor ({ token, cursor }: DataSourceConfiguration) {
     this.#token = token
     this.#cursor = cursor
     this.#client = new Web3Storage({ token })

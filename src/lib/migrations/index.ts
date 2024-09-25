@@ -2,21 +2,19 @@ import { ConnectionView, DIDKey, Proof, Service, Signer } from '@w3ui/react'
 import retry, { AbortError } from 'p-retry'
 import * as StoreCapabilities from '@web3-storage/capabilities/store'
 import * as UploadCapabilities from '@web3-storage/capabilities/upload'
-import { UploadsSource, Shard, Upload, MigrationSource, MigrationSourceConfiguration } from './api'
-import { NFTStorageMigrator } from './nft-storage'
-import { Web3StorageMigrator } from './web3-storage'
+import { Reader, Shard, Upload, DataSourceID, DataSourceConfiguration } from './api'
+import * as NFTStorage from './nft-storage'
+import * as Web3Storage from './web3-storage'
+import * as Web3StoragePSA from './web3-storage-psa'
 
 const REQUEST_RETRIES = 3
 
-export const create = (source: MigrationSource, config: MigrationSourceConfiguration) => {
-  switch (source) {
-    case 'classic.nft.storage':
-      return new NFTStorageMigrator(config)
-    case 'old.web3.storage':
-      return new Web3StorageMigrator(config)
-    default:
-      throw new Error(`not implemented`)
-  }
+const dataSources = [NFTStorage, Web3Storage, Web3StoragePSA]
+
+export const createReader = (source: DataSourceID, config: DataSourceConfiguration): Reader => {
+  const ds = dataSources.find(m => m.id === source)
+  if (!ds) throw new Error(`not implemented: ${source}`)
+  return ds.createReader(config)
 }
 
 export const migrate = async ({
@@ -31,7 +29,7 @@ export const migrate = async ({
   onError
 }: {
   signal: AbortSignal
-  uploads: UploadsSource
+  uploads: Reader
   issuer: Signer
   space: DIDKey
   proofs: Proof[]

@@ -6,10 +6,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { H1, H2 } from '@/components/Text'
 import { useMigrations } from '@/components/MigrationsProvider'
 import { DIDKey, useW3 } from '@w3ui/react'
-import * as NFTStorageMigrator from '@/lib/migrations/nft-storage'
-import * as Web3StorageMigrator from '@/lib/migrations/web3-storage'
 import { DidIcon } from '@/components/DidIcon'
-import { MigrationConfiguration, MigrationSource } from '@/lib/migrations/api'
+import { MigrationConfiguration, DataSourceID } from '@/lib/migrations/api'
+import { dataSources } from '@/app/migration/data-sources'
 
 interface WizardProps {
   config: Partial<MigrationConfiguration>
@@ -46,7 +45,7 @@ export default function CreateMigrationPage (): JSX.Element {
 }
 
 function ChooseSource ({ config, onNext }: WizardProps) {
-  const [source, setSource] = useState<MigrationSource|undefined>(config.source)
+  const [source, setSource] = useState<DataSourceID|undefined>(config.source)
   const handleNextClick: MouseEventHandler = e => {
     e.preventDefault()
     if (!source) return
@@ -60,13 +59,12 @@ function ChooseSource ({ config, onNext }: WizardProps) {
         <p className='mb-8'>This tool allows data to be migrated from a previous provider to one of your spaces.</p>
         <H2>Where from?</H2>
         <p className='mb-4'>Pick a storage service you want to migrate data from.</p>
-        <div className='mb-4'>
-          <button className={`bg-white/60 rounded-lg shadow-md p-8 hover:outline mr-4 ${source === 'classic.nft.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('classic.nft.storage')} title='Migrate from NFT.Storage (Classic)'>
-            <img src='/nftstorage-logo.png' width='350' />
-          </button>
-          <button className={`bg-white/60 rounded-lg shadow-md p-8 ${source === 'old.web3.storage' ? 'outline' : ''}`} type='button' onClick={() => setSource('old.web3.storage')} title='Migrate from Web3.Storage (Old)' disabled={true}>
-            <img src='/web3storage-logo.png' width='350' />
-          </button>
+        <div className='mb-4 text-center'>
+          {dataSources.map(({ name, logo, source: { id } }) => (
+            <button className={`bg-white/60 rounded-lg shadow-md p-8 border border-black hover:outline ml-4 first:ml-0 mb-4 ${source === id ? 'outline' : ''}`} type='button' onClick={() => setSource(id)} title={`Migrate from ${name}`}>
+              {logo}
+            </button>
+          ))}
         </div>
         <button onClick={handleNextClick} className={`inline-block bg-hot-red border border-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap ${source ? 'hover:bg-white hover:text-hot-red' : 'opacity-10'}`} disabled={!source}>
           Next <ChevronRightIcon className='h-5 w-5 inline-block ml-1 align-middle' style={{marginTop: -4}} />
@@ -80,19 +78,16 @@ function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
   const [token, setToken] = useState<string|undefined>(config.token)
   const [error, setError] = useState('')
 
+  const ds = dataSources.find(({ source }) => source.id === config.source)
+  if (!ds) return
+
   const handleNextClick: MouseEventHandler = async e => {
     e.preventDefault()
     if (!token) return
     setError('')
 
     try {
-      if (config.source === 'classic.nft.storage') {
-        await NFTStorageMigrator.checkToken(token)
-      } else if (config.source === 'old.web3.storage') {
-        await Web3StorageMigrator.checkToken(token)
-      } else {
-        throw new Error(`unknown data source: ${config.source}`)
-      }
+      await ds.source.checkToken(token)
     } catch (err: any) {
       console.error(err)
       return setError(`Error using token: ${err.message}`)
@@ -103,7 +98,7 @@ function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
     <div className='max-w-4xl'>
       <H1>Add data source token</H1>
       <div className='bg-white my-4 p-5 rounded-2xl border border-hot-red font-epilogue'>
-        <p className='mb-8'>Add your <strong>{config.source}</strong> API token. Note: the key never leaves this device, it is for local use only by the migration tool.</p>
+        <p className='mb-8'>Add your API token for <strong>{ds.name}</strong>. Note: the key never leaves this device, it is for local use only by the migration tool.</p>
         <H2>API Token</H2>
         <div className='max-w-xl mb-4'>
           <input
@@ -175,6 +170,9 @@ function Confirmation ({ config, onNext, onPrev }: WizardProps) {
   const space = spaces.find(s => s.did() === config.space)
   if (!space) return
 
+  const ds = dataSources.find(({ source }) => source.id === config.source)
+  if (!ds) return
+
   const handleNextClick: MouseEventHandler = async e => {
     e.preventDefault()
     onNext(config)
@@ -185,8 +183,8 @@ function Confirmation ({ config, onNext, onPrev }: WizardProps) {
       <div className='bg-white my-4 p-5 rounded-2xl border border-hot-red font-epilogue'>
         <p className='mb-8'>Make sure these details are correct before starting the migration.</p>
         <H2>Source</H2>
-        <div className={`bg-white/60 rounded-lg shadow-md p-8 mb-4 inline-block`} title='Web3.Storage (Old)'>
-          <img src={config.source === 'old.web3.storage' ? '/web3storage-logo.png' : '/nftstorage-logo.png'} width='360' />
+        <div className={`bg-white/60 rounded-lg shadow-md p-8 mb-4 inline-block`} title={ds.name}>
+          {ds.logo}
         </div>
         <H2>Target</H2>
         <div className='max-w-lg border rounded-2xl border-hot-red bg-white mb-4'>
