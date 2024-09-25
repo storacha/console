@@ -1,4 +1,4 @@
-import { DataSourceConfiguration, Reader, Upload } from './api'
+import { DataSourceConfiguration, Upload } from './api'
 
 export const id = 'psa.old.web3.storage'
 
@@ -6,9 +6,9 @@ export const checkToken = async (token: string) => {
   throw new Error('not implemented')
 }
 
-export const createReader = (conf: DataSourceConfiguration) => new PSAReader(conf)
+export const createReader = (conf: DataSourceConfiguration) => new Reader(conf)
 
-class PSAReader implements Reader {
+class Reader {
   #token
   #cursor
   #started

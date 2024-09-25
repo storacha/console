@@ -61,7 +61,7 @@ function ChooseSource ({ config, onNext }: WizardProps) {
         <p className='mb-4'>Pick a storage service you want to migrate data from.</p>
         <div className='mb-4 text-center'>
           {dataSources.map(({ name, logo, source: { id } }) => (
-            <button className={`bg-white/60 rounded-lg shadow-md p-8 border border-black hover:outline ml-4 first:ml-0 mb-4 ${source === id ? 'outline' : ''}`} type='button' onClick={() => setSource(id)} title={`Migrate from ${name}`}>
+            <button key={id} className={`bg-white/60 rounded-lg shadow-md p-8 border border-black hover:outline ml-4 first:ml-0 mb-4 ${source === id ? 'outline' : ''}`} type='button' onClick={() => setSource(id)} title={`Migrate from ${name}`}>
               {logo}
             </button>
           ))}
