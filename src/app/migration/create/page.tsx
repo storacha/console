@@ -2,7 +2,7 @@
 
 import { MouseEventHandler, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { ArrowPathIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { H1, H2 } from '@/components/Text'
 import { useMigrations } from '@/components/MigrationsProvider'
 import { DIDKey, useW3 } from '@w3ui/react'
@@ -76,6 +76,7 @@ function ChooseSource ({ config, onNext }: WizardProps) {
 
 function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
   const [token, setToken] = useState<string|undefined>(config.token)
+  const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')
 
   const ds = dataSources.find(({ source }) => source.id === config.source)
@@ -83,14 +84,17 @@ function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
 
   const handleNextClick: MouseEventHandler = async e => {
     e.preventDefault()
-    if (!token) return
+    if (!token || checking) return
     setError('')
+    setChecking(true)
 
     try {
       await ds.source.checkToken(token)
     } catch (err: any) {
       console.error(err)
       return setError(`Error using token: ${err.message}`)
+    } finally {
+      setChecking(false)
     }
     onNext({ ...config, token })
   }
@@ -114,8 +118,10 @@ function AddSourceToken ({ config, onNext, onPrev }: WizardProps) {
         <button onClick={e => { e.preventDefault(); onPrev() }} className={`inline-block bg-hot-red border border-hot-red font-epilogue text-white uppercase text-sm mr-2 px-6 py-2 rounded-full whitespace-nowrap hover:bg-white hover:text-hot-red`}>
           <ChevronLeftIcon className='h-5 w-5 inline-block mr-1 align-middle' style={{marginTop: -4}}/> Previous
         </button>
-        <button onClick={handleNextClick} className={`inline-block bg-hot-red border border-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap ${token ? 'hover:bg-white hover:text-hot-red' : 'opacity-10'}`} disabled={!token}>
-          Next <ChevronRightIcon className='h-5 w-5 inline-block ml-1 align-middle' style={{marginTop: -4}}/>
+        <button onClick={handleNextClick} className={`inline-block bg-hot-red border border-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap ${token ? 'hover:bg-white hover:text-hot-red' : 'opacity-10'}`} disabled={!token || checking}>
+          {checking
+            ? <><ArrowPathIcon className={`h-5 w-5 animate-spin inline-block mr-1 align-middle`}/>Checking...</>
+            : <>Next <ChevronRightIcon className='h-5 w-5 inline-block ml-1 align-middle' style={{marginTop: -4}}/></>}
         </button>
       </div>
     </div>
@@ -183,7 +189,7 @@ function Confirmation ({ config, onNext, onPrev }: WizardProps) {
       <div className='bg-white my-4 p-5 rounded-2xl border border-hot-red font-epilogue'>
         <p className='mb-8'>Make sure these details are correct before starting the migration.</p>
         <H2>Source</H2>
-        <div className={`bg-white/60 rounded-lg shadow-md p-8 mb-4 inline-block`} title={ds.name}>
+        <div className={`bg-white/60 rounded-lg shadow-md p-8 mb-4 inline-block border border-black`} title={ds.name}>
           {ds.logo}
         </div>
         <H2>Target</H2>

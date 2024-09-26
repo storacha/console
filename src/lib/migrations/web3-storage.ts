@@ -5,6 +5,7 @@ import { CarBlockIterator } from '@ipld/car'
 import { LinkIndexer } from 'linkdex'
 import { DataSourceConfiguration, Shard, Upload } from './api'
 import { carCode } from './constants'
+import { fetchCAR } from './gateway'
 
 export const id = 'old.web3.storage'
 
@@ -78,20 +79,8 @@ class Reader {
       // TODO: fetch from /complete?
       if (!shards.length) {
         try {
-          const res = await fetch(`https://w3s.link/ipfs/${root}?format=car`)
-          if (!res.ok) throw new Error('failed to get DAG as CAR', { cause: { status: res.status } })
-          const bytes = new Uint8Array(await res.arrayBuffer())
-          // Verify CAR is complete
-          const iterator = await CarBlockIterator.fromBytes(bytes)
-          const index = new LinkIndexer()
-          for await (const block of iterator) {
-            index.decodeAndIndex(block)
-          }
-          if (!index.isCompleteDag()) {
-            throw new Error('CAR does not contain a complete DAG')
-          }
-          const link = Link.create(carCode, await sha256.digest(bytes))
-          shards.push({ link, size: async () => bytes.length, bytes: async () => bytes })
+          const shard = await fetchCAR(root)
+          shards.push(shard)
         } catch (err) {
           console.error(`failed to download CAR for item: ${root}`, err)
         }

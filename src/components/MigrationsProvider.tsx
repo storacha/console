@@ -127,7 +127,7 @@ export function Provider ({ children }: ProviderProps): ReactNode {
       },
       onError: async (err, upload, shard) => {
         console.error(err)
-        log(id, `migration failed ${upload.root}${shard ? ` (shard: ${shard.link})` : ''}: ${err.stack}`)
+        log(id, `failed migration ${upload.root}${shard ? ` (shard: ${shard.link})` : ''}: ${err.stack}`)
         const migration = migrationsStore.read(id)
         migration.progress = migration.progress ?? await initProgress()
         migration.progress.failed.push(upload.root)
@@ -138,6 +138,16 @@ export function Provider ({ children }: ProviderProps): ReactNode {
         }
         migrationsStore.update(migration)
         setMigrations(() => migrationsStore.load())
+      },
+      onComplete: async () => {
+        log(id, 'finished migration')
+        const migration = migrationsStore.read(id)
+        // there will be no progress if there are 0 items to migrate
+        if (!migration.progress) {
+          migration.progress = migration.progress ?? await initProgress()
+          migrationsStore.update(migration)
+          setMigrations(() => migrationsStore.load())
+        }
       }
     })
   }

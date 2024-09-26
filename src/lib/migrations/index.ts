@@ -26,7 +26,8 @@ export const migrate = async ({
   connection,
   onStoreAdd,
   onUploadAdd,
-  onError
+  onError,
+  onComplete
 }: {
   signal: AbortSignal
   uploads: Reader
@@ -37,6 +38,7 @@ export const migrate = async ({
   onStoreAdd: (upload: Upload, shard: Shard) => unknown
   onUploadAdd: (upload: Upload) => unknown
   onError: (err: Error, upload: Upload, shard?: Shard) => unknown
+  onComplete: () => unknown
 }) => {
   for await (const upload of uploads) {
     let allShardsStored = Boolean(upload.shards.length) // if 0 shards we did not store them
@@ -63,7 +65,7 @@ export const migrate = async ({
         }, { onFailedAttempt: console.warn, retries: REQUEST_RETRIES })
 
         if (signal.aborted) return
-        onStoreAdd(upload, shard)
+        await onStoreAdd(upload, shard)
 
         if (result.status === 'done') {
           continue
@@ -96,7 +98,7 @@ export const migrate = async ({
         }
       } catch (err: any) {
         if (signal.aborted) return
-        onError(err, upload, shard)
+        await onError(err, upload, shard)
         allShardsStored = false
         break
       }
@@ -122,10 +124,11 @@ export const migrate = async ({
       }
 
       if (signal.aborted) return
-      onUploadAdd(upload)
+      await onUploadAdd(upload)
     } catch (err: any) {
       if (signal.aborted) return
-      onError(err, upload)
+      await onError(err, upload)
     }
   }
+  await onComplete()
 }
