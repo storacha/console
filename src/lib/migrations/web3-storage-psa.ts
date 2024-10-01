@@ -1,6 +1,10 @@
 import * as Link from 'multiformats/link'
+import { UnknownLink } from 'multiformats'
+import * as dagJSON from '@ipld/dag-json'
 import { DataSourceConfiguration, Shard, Upload } from './api'
 import * as Gateway from './gateway'
+import { Result, Failure } from '@ucanto/interface'
+import { CARLink } from '@w3ui/react'
 
 export const id = 'psa.old.web3.storage'
 
@@ -11,6 +15,8 @@ export const checkToken = async (token: string) => {
 export const createReader = (conf: DataSourceConfiguration) => new Reader(conf)
 
 const endpoint = new URL('https://api.web3.storage')
+const hasherEndpoint = new URL('https://hash-psa-old.web3.storage')
+const downloadEndpoint = new URL('https://download-psa-old.web3.storage')
 const pageSize = 1000
 
 class Reader {
@@ -65,9 +71,35 @@ class Reader {
         const root = Link.parse(result.pin.cid)
         const shards: Shard[] = []
 
-        // TODO: determine shard CID + size
-        // shard should be in carpark, but create a shard where the method to get
-        // bytes calls an API that serves data from /complete
+        try {
+          const hasherURL = new URL(hasherEndpoint)
+          hasherURL.searchParams.set('root', root.toString())
+          const res = await fetch(hasherURL)
+          const data: Result<HasherSuccess, Failure> = dagJSON.parse(await res.text())
+          if (data.error) {
+            throw new Error('fetching CAR hash', { cause: data.error })
+          }
+          shards.push({
+            link: data.ok.link,
+            size: async () => data.ok.size,
+            bytes: async () => {
+              const downloadURL = new URL(downloadEndpoint)
+              downloadURL.searchParams.set('root', root.toString())
+              const downloadRes = await fetch(downloadURL)
+              const data: Result<DownloadSuccess, Failure> = dagJSON.parse(await downloadRes.text())
+              if (data.error) {
+                throw new Error('getting download URL', { cause: data.error })
+              }
+              const bytesRes = await fetch(data.ok.url)
+              if (!bytesRes.ok) {
+                throw new Error(`downloading from: ${data.ok.url}, status: ${bytesRes.status}`)
+              }
+              return new Uint8Array(await bytesRes.arrayBuffer())
+            }
+          })
+        } catch (err) {
+          console.error(`determining CAR hash for root: ${root}`, err)
+        }
 
         // Add a synthetic shard that is the entire DAG.
         // Attempt to download from gateway.
@@ -76,7 +108,7 @@ class Reader {
             const shard = await Gateway.fetchCAR(root)
             shards.push(shard)
           } catch (err) {
-            console.error(`failed to download CAR for item: ${root}`, err)
+            console.error(`downloading CAR for root: ${root}`, err)
           }
         }
 
@@ -91,10 +123,10 @@ class Reader {
 
 interface PinsResponse {
   count: number
-  results: Result[]
+  results: PinItem[]
 }
 
-interface Result {
+interface PinItem {
   created: string
   delegates: string[]
   pin: {
@@ -103,4 +135,15 @@ interface Result {
   }
   requestid: string
   status: 'queued'|'pinning'|'pinned'|'failed'
+}
+
+interface HasherSuccess {
+  root: UnknownLink
+  link: CARLink
+  size: number
+}
+
+interface DownloadSuccess {
+  root: UnknownLink
+  url: string
 }
