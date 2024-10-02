@@ -76,7 +76,6 @@ class Reader {
 
       // Add a synthetic shard that is the entire DAG.
       // Attempt to download from gateway.
-      // TODO: fetch from /complete?
       if (!shards.length) {
         try {
           const shard = await fetchCAR(root)

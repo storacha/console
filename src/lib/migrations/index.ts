@@ -104,8 +104,15 @@ export const migrate = async ({
       }
     }
 
+    // signal that this upload failed if it has no shards
+    if (upload.shards.length === 0) {
+      await onError(new Error('upload has no shards'), upload)
+    }
+
     // do no register an upload if not all the shards uploaded successfully
-    if (!allShardsStored) continue
+    if (!allShardsStored) {
+      continue
+    }
 
     try {
       const receipt = await UploadCapabilities.add.invoke({
