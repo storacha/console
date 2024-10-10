@@ -1,9 +1,10 @@
 'use client'
 
+import { CAR } from '@ucanto/transport'
 import { H2 } from '@/components/Text'
-import { useW3, FilecoinInfoSuccess, StoreGetSuccess } from '@w3ui/react'
+import { useW3, FilecoinInfoSuccess, BlobGetSuccess, CARLink } from '@w3ui/react'
 import useSWR from 'swr'
-import { parse as parseLink } from 'multiformats/link'
+import { Link, parse as parseLink } from 'multiformats/link'
 import DefaultLoader from '@/components/Loader'
 import * as Claims from '@web3-storage/content-claims/client'
 import { Aggregate, MerkleTreeNode, Piece, PieceLink, PieceView, Proof, ProofData } from '@web3-storage/data-segment'
@@ -28,23 +29,38 @@ interface PageProps {
   }
 }
 
+const isCARLink = (link: Link): link is CARLink => link.code === CAR.codec.code
+
 export default function ItemPage ({ params }: PageProps): JSX.Element {
   const [{ client, spaces }] = useW3()
   const spaceDID = decodeURIComponent(params.did)
   const space = spaces.find(s => s.did() === spaceDID)
   const root = parseLink(params.cid)
-  const shard = parseLink(params.shard)
+  const shard = parseLink(params.shard).toV1()
 
   const storeKey = `/space/${spaceDID}/store/get?link=${shard}`
-  const store = useSWR<StoreGetSuccess|undefined>(storeKey, {
+  const store = useSWR<{ size: number } | undefined>(storeKey, {
     fetcher: async () => {
-      if (!client || !space) return
+      if (!client || !space || !(isCARLink(shard))) return
 
       if (client.currentSpace()?.did() !== space.did()) {
         await client.setCurrentSpace(space.did())
       }
 
-      return await client.capability.store.get(shard)
+      // First try to get the shard using the Blob protocol, then fall back to
+      // the Store protocol. Note that the Blob attempt can throw *or* return an
+      // error in the result.
+      return client.capability.blob.get(shard.multihash).then((result) => {
+        if (result.error) throw result.error
+        return result.ok.blob
+      }).catch((blobErr) => {
+        return client.capability.store.get(shard).catch((storeErr) => {
+          throw new Error(
+            'failed to get shard with either Blob or Store protocols',
+            { cause: [blobErr, storeErr] }
+          )
+        })
+      })
     },
     onError: err => console.error(err.message, err.cause)
   })
@@ -240,11 +256,11 @@ function InclusionProof ({ proof, piece, style }: { proof: ProofData, piece: Pie
   return (
     <div className='font-mono whitespace-nowrap overflow-x-scroll'>
       {archy(data).split('\n').map(line => {
-        if (!line) return <div key={Math.random()} />
+        if (!line) return <div />
         if (line.indexOf(' ') === -1) {
           return (
             <div key={line}>
-              <span className='border-hot-yellow border-b-2 border-dotted'>{line}</span>
+              <span className='border-purple-500 border-b-2 border-dotted'>{line}</span>
               <AggregateIcon className='opacity-60' />
               <span className='text-sm opacity-60'>Aggregate CID</span>
             </div>
@@ -263,7 +279,7 @@ function InclusionProof ({ proof, piece, style }: { proof: ProofData, piece: Pie
         return (
           <div key={line}>
             <pre className='inline-block'>{tree}</pre>&nbsp;
-            <span className={`${isPath ? 'opacity-100' : 'opacity-30'} ${isPiece ? 'border-hot-red border-b-2 border-dotted' : ''}`}>
+            <span className={`${isPath ? 'opacity-100' : 'opacity-30'} ${isPiece ? 'border-blue-600 border-b-2 border-dotted' : ''}`}>
               {label}
             </span>
             {isPiece && <><PieceIcon className='opacity-60' /><span className='text-sm opacity-60'>Piece CID</span></>}
