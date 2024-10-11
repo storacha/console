@@ -42,8 +42,8 @@ importers:
         specifier: ^19.0.0
         version: 19.0.0
       '@web3-storage/capabilities':
-        specifier: ^17.1.0
-        version: 17.1.0
+        specifier: ^17.3.0
+        version: 17.3.0
       '@web3-storage/content-claims':
         specifier: ^3.2.1
         version: 3.2.1
@@ -953,9 +953,6 @@ packages:
 
   '@web3-storage/capabilities@16.0.0':
     resolution: {integrity: sha512-wCjLpYc6t8tFRZrF2k2vBteJDWzHkmQjoJG0Yy/fjA04IjNN48iVZaCMQIANHXZxDGlYRGxhwzDwl4dovAdSTQ==}
-
-  '@web3-storage/capabilities@17.1.0':
-    resolution: {integrity: sha512-p5Wn2O3TSEZ7JFSph2KY9OuFnofbkhKi7Tp+1zcPEYAUsEvDWGabd1NvSPDDMpFBE74UX4ZljE8aQzDAtI3qRw==}
 
   '@web3-storage/capabilities@17.3.0':
     resolution: {integrity: sha512-9415OPNVYO5gXDVf1vzZywkjndKTVA9IPnU04lQXxUaYfYZ5S5kzV2PI1SvySMOsCNE7u7uSCTiclblx5gPYAg==}
@@ -4746,7 +4743,7 @@ snapshots:
       '@ucanto/principal': 9.0.1
       '@ucanto/transport': 9.1.1
       '@ucanto/validator': 9.0.2
-      '@web3-storage/capabilities': 17.1.0
+      '@web3-storage/capabilities': 17.3.0
       '@web3-storage/did-mailto': 2.1.0
       bigint-mod-arith: 3.3.1
       conf: 11.0.2
@@ -4767,7 +4764,7 @@ snapshots:
       '@ucanto/principal': 9.0.1
       '@ucanto/transport': 9.1.1
       '@ucanto/validator': 9.0.2
-      '@web3-storage/capabilities': 17.1.0
+      '@web3-storage/capabilities': 17.3.0
       '@web3-storage/did-mailto': 2.1.0
       bigint-mod-arith: 3.3.1
       conf: 11.0.2
@@ -4810,16 +4807,6 @@ snapshots:
       uint8arrays: 5.1.0
 
   '@web3-storage/capabilities@16.0.0':
-    dependencies:
-      '@ucanto/core': 10.0.1
-      '@ucanto/interface': 10.0.1
-      '@ucanto/principal': 9.0.1
-      '@ucanto/transport': 9.1.1
-      '@ucanto/validator': 9.0.2
-      '@web3-storage/data-segment': 3.2.0
-      uint8arrays: 5.1.0
-
-  '@web3-storage/capabilities@17.1.0':
     dependencies:
       '@ucanto/core': 10.0.1
       '@ucanto/interface': 10.0.1
@@ -4904,7 +4891,7 @@ snapshots:
       '@ucanto/core': 10.0.1
       '@ucanto/interface': 10.0.1
       '@ucanto/transport': 9.1.1
-      '@web3-storage/capabilities': 17.1.0
+      '@web3-storage/capabilities': 17.3.0
       '@web3-storage/data-segment': 5.1.0
       '@web3-storage/filecoin-client': 3.3.3
       ipfs-utils: 9.0.14(encoding@0.1.13)
@@ -4944,7 +4931,7 @@ snapshots:
       '@ucanto/principal': 9.0.1
       '@ucanto/transport': 9.1.1
       '@web3-storage/access': 18.4.0
-      '@web3-storage/capabilities': 17.1.0
+      '@web3-storage/capabilities': 17.3.0
       '@web3-storage/did-mailto': 2.1.0
       '@web3-storage/filecoin-client': 3.3.3
       '@web3-storage/upload-client': 14.1.1(encoding@0.1.13)
@@ -7966,7 +7953,7 @@ snapshots:
 
   uint8arrays@5.1.0:
     dependencies:
-      multiformats: 13.1.0
+      multiformats: 13.3.0
 
   unbox-primitive@1.0.2:
     dependencies:

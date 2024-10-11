@@ -29,8 +29,6 @@ interface PageProps {
   }
 }
 
-const isCARLink = (link: Link): link is CARLink => link.code === CAR.codec.code
-
 export default function ItemPage ({ params }: PageProps): JSX.Element {
   const [{ client, spaces }] = useW3()
   const spaceDID = decodeURIComponent(params.did)
@@ -41,26 +39,33 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
   const storeKey = `/space/${spaceDID}/store/get?link=${shard}`
   const store = useSWR<{ size: number } | undefined>(storeKey, {
     fetcher: async () => {
-      if (!client || !space || !(isCARLink(shard))) return
+      if (!client || !space || !isCARLink(shard)) return
 
       if (client.currentSpace()?.did() !== space.did()) {
         await client.setCurrentSpace(space.did())
       }
 
       // First try to get the shard using the Blob protocol, then fall back to
-      // the Store protocol. Note that the Blob attempt can throw *or* return an
-      // error in the result.
-      return client.capability.blob.get(shard.multihash).then((result) => {
-        if (result.error) throw result.error
+      // the Store protocol.
+      try {
+        const result = await client.capability.blob.get(shard.multihash)
+        // Note that, oddly, this result is never `error`, but the call may
+        // throw.
         return result.ok.blob
-      }).catch((blobErr) => {
-        return client.capability.store.get(shard).catch((storeErr) => {
+      } catch (blobErr) {
+        // Rethrow other errors.
+        if (!isErrorCausedByBlobNotFound(blobErr)) throw blobErr
+
+        // If there was no Blob, try the Store protocol.
+        try {
+          return await client.capability.store.get(shard)
+        } catch (storeErr) {
           throw new Error(
             'failed to get shard with either Blob or Store protocols',
             { cause: [blobErr, storeErr] }
           )
-        })
-      })
+        }
+      }
     },
     onError: err => console.error(err.message, err.cause)
   })
@@ -185,6 +190,28 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
         </div>
       </div>
     </div>
+  )
+}
+
+function isCARLink(link: Link): link is CARLink {
+  return link.code === CAR.codec.code
+}
+
+/**
+ * True if the error is caused by a BlobNotFound error. (This is a slightly
+ * convoluted signal at the moment; the client could be clearer about signaling
+ * this, but this is what it currently throws.)
+ * @param exception The thrown value
+ */
+function isErrorCausedByBlobNotFound(exception: unknown) {
+  return (
+    exception &&
+    typeof exception === 'object' &&
+    'cause' in exception &&
+    exception.cause &&
+    typeof exception.cause === 'object' &&
+    'name' in exception.cause &&
+    exception.cause.name === 'BlobNotFound'
   )
 }
 
