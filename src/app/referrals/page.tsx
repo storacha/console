@@ -29,7 +29,7 @@ export default function ReferralsPage () {
   const accountEmail = account?.toEmail()
   const [formEmail, setFormEmail] = useState<string>()
   const email = accountEmail || formEmail
-  const { data: refcodeResult } = useSWR<RefcodeResult>(email && `/referrals/refcode/${encodeURIComponent(email)}`, fetcher)
+  const { data: refcodeResult, mutate: mutateRefcode } = useSWR<RefcodeResult>(email && `/referrals/refcode/${encodeURIComponent(email)}`, fetcher)
   const refcode = refcodeResult?.refcode
   const { data: referralsResult } = useSWR<ReferralsResult>(refcode && `/referrals/list/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
@@ -58,15 +58,20 @@ export default function ReferralsPage () {
       ) : (
         accountEmail ? (
           <button className={`inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap`}
-            onClick={() => {
+            onClick={async () => {
               const referralData = new FormData()
               referralData.append('email', accountEmail)
-              createRefcode(referralData)
+              await createRefcode(referralData)
+              mutateRefcode()
             }}>
             Create
           </button>
         ) : (
-          <form action={createRefcode} className=''>
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            createRefcode(new FormData(e.currentTarget))
+            mutateRefcode()
+          }} className=''>
             <label className='block mb-2 uppercase text-xs text-hot-red font-epilogue m-1' htmlFor='email'>Your Email</label>
             <input
               id='email'

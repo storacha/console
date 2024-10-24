@@ -1,7 +1,4 @@
-'use server'
-
 import { customAlphabet } from 'nanoid'
-import { getRequestContext } from "@cloudflare/next-on-pages"
 
 // 16 characters from this alphabet is plenty safe enough - per https://zelark.github.io/nano-id-cc/
 // "399B IDs needed, in order to have a 1% probability of at least one collision."
@@ -12,39 +9,16 @@ const nanoid = customAlphabet("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz")
 export const generateRefcode = () => nanoid(REFCODE_LENGTH)
 
 export async function createRefcode (form: FormData) {
-  'use server'
-  const email = form.get('email')
-  const refcode = generateRefcode()
-  const referralsDB = getRequestContext().env.REFERRALS
-  const insertStmt = referralsDB.prepare(`
-    INSERT INTO users (email, refcode) 
-    VALUES (?, ?)
-    `).bind(email, refcode)
-  const result = await insertStmt.run()
-  if (result.error) {
-    return {
-      errors: [result.error]
-    }
-  }
-  return Response.json({
-    refcode
+  console.log("CREATING REFCODE", form)
+  return fetch(`/referrals/refcode/create`, {
+    method: 'POST',
+    body: form
   })
 }
 
 export async function createReferral (form: FormData) {
-  'use server'
-  const email = form.get('email')
-  const refcode = form.get('refcode')
-  const referralsDB = getRequestContext().env.REFERRALS
-  const insertStmt = referralsDB.prepare(`
-    INSERT INTO referrals (email, refcode) 
-    VALUES (?, ?)
-    `).bind(email, refcode)
-  const result = await insertStmt.run()
-  if (result.error) {
-    return {
-      errors: [result.error]
-    }
-  }
-  return Response.json({})
+  return fetch(`/referrals/create`, {
+    method: 'POST',
+    body: form
+  })
 }
