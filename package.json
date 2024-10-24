@@ -11,9 +11,13 @@
     "lint": "next lint",
     "pages:build": "pnpm dlx @cloudflare/next-on-pages@1",
     "pages:watch": "pnpm @cloudflare/next-on-pages@1 --watch",
-    "pages:dev": "pnpm wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat"
+    "pages:dev": "pnpm pages:build && pnpm wrangler pages dev .vercel/output/static --port 3000 --compatibility-flag=nodejs_compat",
+    "referrals:db:local:clear": "rm -rf .wrangler/state/v3/d1",
+    "referrals:db:local:init": "pnpm wrangler d1 migrations apply referrals --local",
+    "referrals:db:local:reset": "pnpm referrals:db:local:clear && pnpm referrals:db:local:init"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.5",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@ipld/car": "^5.2.4",
@@ -35,6 +39,8 @@
     "blueimp-md5": "^2.19.0",
     "linkdex": "^3.0.0",
     "multiformats": "^12.1.3",
+    "nanoid": "^5.0.7",
+    "nanoid-dictionary": "^4.3.0",
     "next": "^13.5.4",
     "nft.storage": "^7.1.1",
     "p-retry": "^6.2.0",
@@ -46,7 +52,7 @@
     "web3.storage": "^4.5.5"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.6.3",
+    "@cloudflare/workers-types": "^4.20241018.0",
     "@types/archy": "^0.0.36",
     "@types/blueimp-md5": "^2.18.0",
     "@types/node": "latest",
@@ -60,6 +66,6 @@
     "tailwindcss": "latest",
     "typescript": "latest",
     "vercel": "33.2.0",
-    "wrangler": "^3.11.0"
+    "wrangler": "^3.80.3"
   }
 }

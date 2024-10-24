@@ -1,0 +1,10 @@
+name = "console"
+compatibility_date = "2024-07-29"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "REFERRALS" # i.e. available in your Worker on env.DB
+database_name = "referrals"
+database_id = "65fdb889-7f6a-4cf7-b12a-3272ee730504"
+preview_database_id = "REFERRALS"
