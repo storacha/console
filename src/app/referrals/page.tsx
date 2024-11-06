@@ -3,7 +3,7 @@
 import CopyButton from '@/components/CopyButton'
 import DefaultLoader from '@/components/Loader'
 import { H1, H3 } from '@/components/Text'
-import { useReferrals } from '@/lib/hooks'
+import { useReferrals } from '@/lib/referrals/hooks'
 
 export const runtime = "edge"
 

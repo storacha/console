@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import useSWR from "swr"
 import { useW3 } from "@w3ui/react"
-import { createRefcode } from './referrals'
+import { createRefcode } from '../referrals'
 
 interface RefcodeResult {
   refcode: string
