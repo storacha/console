@@ -8,7 +8,7 @@ import { SettingsNav } from './layout'
 import { H1, H2, H3 } from '@/components/Text'
 import { GB, TB, filesize } from '@/lib'
 import DefaultLoader from '@/components/Loader'
-import { RefcodeLink } from '../referrals/page'
+import { RefcodeLink, ReferralsList } from '../referrals/page'
 
 const Plans: Record<`did:${string}`, { name: string, limit: number }> = {
   'did:web:starter.web3.storage': { name: 'Starter', limit: 5 * GB },
@@ -89,12 +89,7 @@ export default function SettingsPage (): JSX.Element {
         </div>
       </div>
       <div className='border border-hot-red rounded-2xl bg-white p-5 max-w-4xl mb-4'>
-        <H3>Earn Free Storage and Racha Points!</H3>
-        <p className='text-hot-red mb-4'>
-          Turn your friends into Lite of Business Rachas and receive up to 16 months of Lite or
-          3 months of Business for free! You can also earn Racha Points. Here you can learn more
-          about the <a href="#TODONeedLink">details of the program</a>.
-        </p>
+        <ReferralsList />
         <RefcodeLink />
       </div>
       <div className='border border-hot-red rounded-2xl bg-white p-5 max-w-4xl'>
