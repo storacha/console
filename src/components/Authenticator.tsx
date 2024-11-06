@@ -4,11 +4,10 @@ import {
   Authenticator as AuthCore,
   useAuthenticator
 } from '@w3ui/react'
-import { useSearchParams } from 'next/navigation'
 import { Logo } from '../brand'
 import { TopLevelLoader } from './Loader'
-import { useEffect } from 'react'
-import { createReferral } from '@/lib/referrals'
+
+import { useRecordRefcode } from '@/lib/referrals/hooks'
 
 export function AuthenticationForm (): JSX.Element {
   const [{ submitted }] = useAuthenticator()
@@ -39,25 +38,8 @@ export function AuthenticationForm (): JSX.Element {
   )
 }
 
-function useURLRefcode () {
-  const searchParams = useSearchParams()
-  return searchParams.get('refcode')
-}
-
 export function AuthenticationSubmitted (): JSX.Element {
-  const [{ email }] = useAuthenticator()
-  const refcode = useURLRefcode()
-  useEffect(() => {
-   (async function createReferralForEmailAndReferrer () {
-      if (email && refcode) {
-        const formData = new FormData()
-        formData.append('email', email)
-        formData.append('refcode', refcode)
-        console.log(`recording ${email} as referred by ${refcode}`)
-        await createReferral(formData)
-      }
-    })()
-  }, [email, refcode])
+  useRecordRefcode()
 
   return (
     <div className='authenticator'>

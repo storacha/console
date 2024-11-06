@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useSWR from "swr"
-import { useW3 } from "@w3ui/react"
-import { createRefcode } from '../referrals'
+import { useAuthenticator, useW3 } from "@w3ui/react"
+import { createRefcode, createReferral } from '../referrals'
+import { useSearchParams } from 'next/navigation'
 
 interface RefcodeResult {
   refcode: string
@@ -35,4 +36,41 @@ export function useReferrals () {
     referrerEmail, setReferrerEmail, accountEmail, email,
     refcode, createRefcode, mutateRefcode, referrals, referralLink
   }
+}
+
+export function useReferredBy () {
+  const [{ accounts }] = useW3()
+  const account = accounts[0]
+  const email = account?.toEmail()
+  const { data: referredByResult, isLoading: referredByIsLoading } = useSWR<RefcodeResult>(email && `/referrals/referredby/${encodeURIComponent(email)}`, fetcher)
+  const referredBy = referredByResult?.refcode
+  return {
+    referredBy
+  }
+}
+
+function useURLRefcode () {
+  const searchParams = useSearchParams()
+  return searchParams.get('refcode')
+}
+
+export function useRecordRefcode () {
+  const [{ email }] = useAuthenticator()
+  const urlRefcode = useURLRefcode()
+  useEffect(() => {
+    (async function createReferralForEmailAndReferrer () {
+      if (email && urlRefcode) {
+        const formData = new FormData()
+        formData.append('email', email)
+        formData.append('refcode', urlRefcode)
+        console.log(`recording ${email} as referred by ${urlRefcode}`)
+        await createReferral(formData)
+      }
+    })()
+  }, [email, urlRefcode])
+
+  const { data: referredByResult, isLoading } = useSWR<RefcodeResult>(email && `/referrals/referredby/${encodeURIComponent(email)}`, fetcher)
+  const referredBy = referredByResult?.refcode
+
+  return { referredBy: referredBy || urlRefcode, isLoading }
 }
