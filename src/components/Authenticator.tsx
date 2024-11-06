@@ -39,6 +39,12 @@ export function AuthenticationForm (): JSX.Element {
 }
 
 export function AuthenticationSubmitted (): JSX.Element {
+  const [{ email }] = useAuthenticator()
+
+  // ensure the referral of this user is tracked if necessary.
+  // we might use the result of this hook in the future to tell
+  // people that they get special pricing on the next page after
+  // they verify their email.
   useRecordRefcode()
 
   return (
