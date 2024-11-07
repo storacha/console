@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.15.1](https://github.com/storacha/console/compare/w3console-v1.15.0...w3console-v1.15.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* Use Ucanto 10 across the board ([#140](https://github.com/storacha/console/issues/140)) ([3201ebc](https://github.com/storacha/console/commit/3201ebca054341e60c9a16aae13bbbd87b2020be))
+
+## [1.15.0](https://github.com/storacha/console/compare/w3console-v1.14.0...w3console-v1.15.0) (2024-10-22)
+
+
+### Features
+
+* Use latest `w3ui` to support reloading spaces ([#138](https://github.com/storacha/console/issues/138)) ([0747635](https://github.com/storacha/console/commit/0747635012c3846aa5db8fb5ccd0f44e60771ea8))
+
+## [1.14.0](https://github.com/storacha/console/compare/w3console-v1.13.1...w3console-v1.14.0) (2024-10-21)
+
+
+### Features
+
+* Actually put error in console, as promised ([#131](https://github.com/storacha/console/issues/131)) ([c194463](https://github.com/storacha/console/commit/c194463959830a04562a200b8812fb443f5edb65))
+
+
+### Bug Fixes
+
+* Revert "fix: Revert "feat: Use Blob protocol"" (😩) ([#136](https://github.com/storacha/console/issues/136)) ([c75f3db](https://github.com/storacha/console/commit/c75f3db347874a82d219737eca3bd1c01d2eabfc))
+
+## [1.13.1](https://github.com/storacha/console/compare/w3console-v1.13.0...w3console-v1.13.1) (2024-10-17)
+
+
+### Bug Fixes
+
+* Revert "feat: Use Blob protocol" ([#134](https://github.com/storacha/console/issues/134)) ([004bfc2](https://github.com/storacha/console/commit/004bfc23397a3950f0b3334c5fccbd9f71862049))
+
+## [1.13.0](https://github.com/storacha/console/compare/w3console-v1.12.0...w3console-v1.13.0) (2024-10-11)
+
+
+### Features
+
+* Use Blob protocol ([#132](https://github.com/storacha/console/issues/132)) ([308837e](https://github.com/storacha/console/commit/308837e10474e4098b65e57913780b26de88c4ad))
+
 ## [1.12.0](https://github.com/storacha/console/compare/w3console-v1.11.0...w3console-v1.12.0) (2024-10-02)
 
 
