@@ -8,15 +8,17 @@ const nanoid = customAlphabet("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz")
 
 export const generateRefcode = () => nanoid(REFCODE_LENGTH)
 
+export const REFERRALS_SERVICE = 'http://localhost:4000'
+
 export async function createRefcode (form: FormData) {
-  return fetch(`/referrals/refcode/create`, {
+  return fetch(`${REFERRALS_SERVICE}/refcode/create`, {
     method: 'POST',
     body: form
   })
 }
 
 export async function createReferral (form: FormData) {
-  return fetch(`/referrals/create`, {
+  return fetch(`${REFERRALS_SERVICE}/referrals/create`, {
     method: 'POST',
     body: form
   })

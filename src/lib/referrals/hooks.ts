@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import useSWR from "swr"
 import { useAuthenticator, useW3 } from "@w3ui/react"
-import { createRefcode, createReferral } from '../referrals'
+import { createRefcode, createReferral, REFERRALS_SERVICE } from '../referrals'
 import { useSearchParams } from 'next/navigation'
 
 interface RefcodeResult {
@@ -26,9 +26,9 @@ export function useReferrals () {
   const accountEmail = account?.toEmail()
   const [referrerEmail, setReferrerEmail] = useState<string>()
   const email = accountEmail || referrerEmail
-  const { data: refcodeResult, mutate: mutateRefcode, isLoading: refcodeIsLoading } = useSWR<RefcodeResult>(email && `/referrals/refcode/${encodeURIComponent(email)}`, fetcher)
+  const { data: refcodeResult, mutate: mutateRefcode, isLoading: refcodeIsLoading } = useSWR<RefcodeResult>(email && `${REFERRALS_SERVICE}/refcode/${encodeURIComponent(email)}`, fetcher)
   const refcode = refcodeResult?.refcode
-  const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `/referrals/list/${refcode}`, fetcher)
+  const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `${REFERRALS_SERVICE}/referrals/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
   const referralLink = refcode && `${location.protocol}//${location.host}/?refcode=${refcode}`
   return {
@@ -42,7 +42,7 @@ export function useReferredBy () {
   const [{ accounts }] = useW3()
   const account = accounts[0]
   const email = account?.toEmail()
-  const { data: referredByResult, isLoading: referredByIsLoading } = useSWR<RefcodeResult>(email && `/referrals/referredby/${encodeURIComponent(email)}`, fetcher)
+  const { data: referredByResult } = useSWR<RefcodeResult>(email && `${REFERRALS_SERVICE}/referredby/${encodeURIComponent(email)}`, fetcher)
   const referredBy = referredByResult?.refcode
   return {
     referredBy
