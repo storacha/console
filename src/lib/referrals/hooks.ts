@@ -23,17 +23,19 @@ const fetcher = (url: string): any => fetch(url).then((res) => res.json())
 export function useReferrals () {
   const [{ accounts }] = useW3()
   const account = accounts[0]
+  const params = useSearchParams()
+  const urlQueryEmail = params.get('email')
   const accountEmail = account?.toEmail()
   const [referrerEmail, setReferrerEmail] = useState<string>()
-  const email = accountEmail || referrerEmail
+  const email = urlQueryEmail || accountEmail || referrerEmail
   const { data: refcodeResult, mutate: mutateRefcode, isLoading: refcodeIsLoading } = useSWR<RefcodeResult>(email && `${REFERRALS_SERVICE}/refcode/${encodeURIComponent(email)}`, fetcher)
   const refcode = refcodeResult?.refcode
   const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `${REFERRALS_SERVICE}/referrals/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
-  const referralLink = refcode && `${location.protocol}//${location.host}/?refcode=${refcode}`
+  const referralLink = refcode && `${process.env.NEXT_PUBLIC_REFERRAL_URL}?refcode=${refcode}`
   return {
     refcodeIsLoading, referralsAreLoading,
-    referrerEmail, setReferrerEmail, accountEmail, email,
+    referrerEmail, setReferrerEmail, urlQueryEmail, accountEmail, email,
     refcode, createRefcode, mutateRefcode, referrals, referralLink
   }
 }

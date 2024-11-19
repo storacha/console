@@ -9,6 +9,7 @@ import { H1, H2, H3 } from '@/components/Text'
 import { GB, TB, filesize } from '@/lib'
 import DefaultLoader from '@/components/Loader'
 import { RefcodeLink, ReferralsList } from '../referrals/page'
+import { useReferrals } from '@/lib/referrals/hooks'
 
 const Plans: Record<`did:${string}`, { name: string, limit: number }> = {
   'did:web:starter.web3.storage': { name: 'Starter', limit: 5 * GB },
@@ -66,9 +67,12 @@ export default function SettingsPage (): JSX.Element {
   const allocated = Object.values(usage ?? {}).reduce((total, n) => total + n, 0)
   const limit = plan?.product ? Plans[plan.product]?.limit : 0
 
-  const referred = 0;
-  const credits = 0;
-  const points = 0;
+  const { referrals } = useReferrals()
+  const referred = referrals?.length || 0
+  
+  // TODO: need to calculate these from the referral information that gets added during the TBD cronjob
+  const credits = 0
+  const points = 0
   return (
     <>
       <SettingsNav />

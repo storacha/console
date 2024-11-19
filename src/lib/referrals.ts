@@ -8,7 +8,7 @@ const nanoid = customAlphabet("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz")
 
 export const generateRefcode = () => nanoid(REFCODE_LENGTH)
 
-export const REFERRALS_SERVICE = 'http://localhost:4000'
+export const REFERRALS_SERVICE = process.env.NEXT_PUBLIC_REFERRALS_SERVICE_URL
 
 export async function createRefcode (form: FormData) {
   return fetch(`${REFERRALS_SERVICE}/refcode/create`, {

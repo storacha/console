@@ -4,25 +4,28 @@ import CopyButton from '@/components/CopyButton'
 import DefaultLoader from '@/components/Loader'
 import { H1, H3 } from '@/components/Text'
 import { useReferrals } from '@/lib/referrals/hooks'
+import { useEffect } from 'react'
 
 export const runtime = "edge"
 
 export function RefcodeCreator () {
-  const { accountEmail, createRefcode, mutateRefcode, setReferrerEmail } = useReferrals()
-
+  const { accountEmail, createRefcode, mutateRefcode, setReferrerEmail, urlQueryEmail } = useReferrals()
+  const prefilledEmail = urlQueryEmail || accountEmail
+  useEffect(function(){
+    if (prefilledEmail){
+      (async () => {
+        const form = new FormData()
+        form.append('email', prefilledEmail)
+        await createRefcode(form)
+        await mutateRefcode()
+      })()
+    }
+  }, [prefilledEmail])
   return (
     <>
       {
-        accountEmail ? (
-          <button className={`inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap`}
-            onClick={async () => {
-              const referralData = new FormData()
-              referralData.append('email', accountEmail)
-              await createRefcode(referralData)
-              mutateRefcode()
-            }}>
-            Create
-          </button>
+        prefilledEmail ? (
+          <DefaultLoader />
         ) : (
           <form onSubmit={(e) => {
             e.preventDefault()
@@ -37,6 +40,7 @@ export function RefcodeCreator () {
               className='text-black py-2 px-2 rounded-xl block mb-4 border border-hot-red w-80'
               placeholder='Email'
               required={true}
+              defaultValue={urlQueryEmail || ""}
               onChange={(e) => { setReferrerEmail(e.target.value) }}
             />
             <button type='submit' className={`inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap`}>
