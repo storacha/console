@@ -10,8 +10,8 @@ export const serviceURL = new URL(
 )
 
 export const receiptsURL = new URL(
-  // 'https://staging.up.web3.storage/receipt'
-  process.env.NEXT_PUBLIC_W3UP_RECEIPTS_URL ?? 'https://up.web3.storage/receipt'
+  // 'https://staging.up.web3.storage/receipt/'
+  process.env.NEXT_PUBLIC_W3UP_RECEIPTS_URL ?? 'https://up.web3.storage/receipt/'
 )
 
 export const servicePrincipal = DID.parse(
