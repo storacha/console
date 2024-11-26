@@ -14,7 +14,7 @@ export function RefcodeCreator ({
   urlQueryEmail,
   createRefcode,
   mutateRefcode,
-  setReferrerEmail,
+  setReferrerEmail
 }: {
   accountEmail: string
   urlQueryEmail: string | null
@@ -43,10 +43,16 @@ export function RefcodeCreator ({
           <form onSubmit={async (e) => {
             e.preventDefault()
             try {
-              console.log("CREATING REFCODE")
-              await createRefcode(new FormData(e.currentTarget))
+              const form = new FormData(e.currentTarget)
+              const email = form.get('email')
+              if (email){
+                setReferrerEmail(email.toString())
+                await createRefcode(form)
+              } else {
+                console.log("email was undefined, this is strange!")
+              }
             } finally {
-              console.log("MUTATING REFCODE")
+              // mutate here to pick up any changes from either create or set
               mutateRefcode()
             }
           }} className=''>
@@ -57,13 +63,8 @@ export function RefcodeCreator ({
               type='email'
               className='text-black py-2 px-2 rounded-xl block mb-4 border border-hot-red w-80'
               placeholder='Email'
+              defaultValue={urlQueryEmail || ''}
               required={true}
-              defaultValue={urlQueryEmail || ""}
-              onChange={async (e) => {
-                setReferrerEmail(e.target.value);
-                console.log("MUTATING REFCODE", e.target.value)
-                await mutateRefcode()
-              }}
             />
             <button type='submit' className={`inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap`}>
               Create
@@ -119,10 +120,10 @@ export function ReferralsList () {
 }
 
 export default function ReferralsPage () {
-  const { refcodeIsLoading, referralLink, referrerEmail, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
+  const { refcodeIsLoading, referralLink, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
   return (
     <div className='p-10 bg-racha-fire/50 w-full h-screen'>
-      <H1>Generate a Referral Code {referrerEmail}</H1>
+      <H1>Generate a Referral Code</H1>
       <div className='border border-hot-red rounded-2xl bg-white p-5'>
         {refcodeIsLoading ? (
           <DefaultLoader className="text-hot-red h-6 w-6" />

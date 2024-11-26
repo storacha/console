@@ -67,7 +67,7 @@ export default function SettingsPage (): JSX.Element {
   const allocated = Object.values(usage ?? {}).reduce((total, n) => total + n, 0)
   const limit = plan?.product ? Plans[plan.product]?.limit : 0
 
-  const { referrals, refcodeIsLoading, referralLink, referrerEmail, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
+  const { referrals, referralLink, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
 
   const referred = referrals?.length || 0
 
