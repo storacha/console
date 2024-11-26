@@ -55,6 +55,7 @@ export function RefcodeCreator () {
 
 export function RefcodeLink () {
   const { referralLink } = useReferrals()
+  console.log("RefcodeLink", referralLink)
   if (referralLink) {
     return (
       <div className="border border-hot-red rounded-full px-4 py-2 flex flex-row justify-between items-center">
