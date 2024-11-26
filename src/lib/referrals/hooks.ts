@@ -26,9 +26,13 @@ export function useReferrals () {
   const params = useSearchParams()
   const urlQueryEmail = params.get('email')
   const accountEmail = account?.toEmail()
-  const [referrerEmail, setReferrerEmail] = useState<string>()
+  const [referrerEmail, setReferrerEmailState] = useState<string>()
   const email = urlQueryEmail || accountEmail || referrerEmail
   const { data: refcodeResult, mutate: mutateRefcode, isLoading: refcodeIsLoading } = useSWR<RefcodeResult>(email && `${REFERRALS_SERVICE}/refcode/${encodeURIComponent(email)}`, fetcher)
+  function setReferrerEmail(email: string){
+    setReferrerEmailState(email)
+    mutateRefcode()
+  }
   const refcode = refcodeResult?.refcode
   const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `${REFERRALS_SERVICE}/referrals/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
