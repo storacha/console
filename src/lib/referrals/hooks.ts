@@ -5,16 +5,16 @@ import { useAuthenticator, useW3 } from "@w3ui/react"
 import { createRefcode, createReferral, REFERRALS_SERVICE } from '../referrals'
 import { useSearchParams } from 'next/navigation'
 
-interface RefcodeResult {
+export interface RefcodeResult {
   refcode: string
 }
 
-interface Referral {
+export interface Referral {
   referredAt: string
   reward: boolean
 }
 
-interface ReferralsResult {
+export interface ReferralsResult {
   referrals: Referral[]
 }
 
@@ -26,24 +26,18 @@ export function useReferrals () {
   const params = useSearchParams()
   const urlQueryEmail = params.get('email')
   const accountEmail = account?.toEmail()
-  const [referrerEmail, setReferrerEmailState] = useState<string>()
+  const [referrerEmail, setReferrerEmail] = useState<string>()
   const email = urlQueryEmail || accountEmail || referrerEmail
   const { data: refcodeResult, mutate: mutateRefcode, isLoading: refcodeIsLoading } = useSWR<RefcodeResult>(email && `${REFERRALS_SERVICE}/refcode/${encodeURIComponent(email)}`, fetcher)
-  function setReferrerEmail(email: string){
-    setReferrerEmailState(email)
-    mutateRefcode()
-  }
   const refcode = refcodeResult?.refcode
   const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `${REFERRALS_SERVICE}/referrals/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
   const referralLink = refcode && `${process.env.NEXT_PUBLIC_REFERRAL_URL}?refcode=${refcode}`
-  const result = ({
+  return ({
     refcodeIsLoading, referralsAreLoading,
     referrerEmail, setReferrerEmail, urlQueryEmail, accountEmail, email,
     refcode, createRefcode, mutateRefcode, referrals, referralLink
   })
-  console.log(result)
-  return result
 }
 
 export function useReferredBy () {

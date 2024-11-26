@@ -3,16 +3,29 @@
 import CopyButton from '@/components/CopyButton'
 import DefaultLoader from '@/components/Loader'
 import { H1, H3 } from '@/components/Text'
-import { useReferrals } from '@/lib/referrals/hooks'
+import { RefcodeResult, useReferrals } from '@/lib/referrals/hooks'
 import { useEffect } from 'react'
+import { KeyedMutator } from 'swr'
 
 export const runtime = "edge"
 
-export function RefcodeCreator () {
-  const { accountEmail, createRefcode, mutateRefcode, setReferrerEmail, urlQueryEmail } = useReferrals()
+export function RefcodeCreator ({
+  accountEmail,
+  urlQueryEmail,
+  createRefcode,
+  mutateRefcode,
+  setReferrerEmail,
+}: {
+  accountEmail: string
+  urlQueryEmail: string | null
+  createRefcode: (form: FormData) => Promise<Response>
+  mutateRefcode: KeyedMutator<RefcodeResult>
+  setReferrerEmail: (email: string) => void
+}
+) {
   const prefilledEmail = urlQueryEmail || accountEmail
-  useEffect(function(){
-    if (prefilledEmail){
+  useEffect(function () {
+    if (prefilledEmail) {
       (async () => {
         const form = new FormData()
         form.append('email', prefilledEmail)
@@ -25,12 +38,17 @@ export function RefcodeCreator () {
     <>
       {
         prefilledEmail ? (
-          <DefaultLoader className="w-6 h-6 color-hot-red"/>
+          <DefaultLoader className="w-6 h-6 color-hot-red" />
         ) : (
-          <form onSubmit={(e) => {
+          <form onSubmit={async (e) => {
             e.preventDefault()
-            createRefcode(new FormData(e.currentTarget))
-            mutateRefcode()
+            try {
+              console.log("CREATING REFCODE")
+              await createRefcode(new FormData(e.currentTarget))
+            } finally {
+              console.log("MUTATING REFCODE")
+              mutateRefcode()
+            }
           }} className=''>
             <label className='block mb-2 uppercase text-xs text-hot-red font-epilogue m-1' htmlFor='email'>Your Email</label>
             <input
@@ -41,7 +59,11 @@ export function RefcodeCreator () {
               placeholder='Email'
               required={true}
               defaultValue={urlQueryEmail || ""}
-              onChange={(e) => { setReferrerEmail(e.target.value) }}
+              onChange={async (e) => {
+                setReferrerEmail(e.target.value);
+                console.log("MUTATING REFCODE", e.target.value)
+                await mutateRefcode()
+              }}
             />
             <button type='submit' className={`inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap`}>
               Create
@@ -53,19 +75,13 @@ export function RefcodeCreator () {
   )
 }
 
-export function RefcodeLink () {
-  const { referralLink } = useReferrals()
-  console.log("RefcodeLink", referralLink)
-  if (referralLink) {
-    return (
-      <div className="border border-hot-red rounded-full px-4 py-2 flex flex-row justify-between items-center">
-        <div>{referralLink}</div>
-        <CopyButton text={referralLink} />
-      </div>
-    )
-  } else {
-    return <RefcodeCreator />
-  }
+export function RefcodeLink ({ referralLink }: { referralLink: string }) {
+  return (
+    <div className="border border-hot-red rounded-full px-4 py-2 flex flex-row justify-between items-center">
+      <div>{referralLink}</div>
+      <CopyButton text={referralLink} />
+    </div>
+  )
 }
 
 export function ReferralsList () {
@@ -103,21 +119,28 @@ export function ReferralsList () {
 }
 
 export default function ReferralsPage () {
-  const { refcodeIsLoading } = useReferrals()
-
+  const { refcodeIsLoading, referralLink, referrerEmail, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
   return (
     <div className='p-10 bg-racha-fire/50 w-full h-screen'>
-      <H1>Generate a Referral Code</H1>
+      <H1>Generate a Referral Code {referrerEmail}</H1>
       <div className='border border-hot-red rounded-2xl bg-white p-5'>
         {refcodeIsLoading ? (
           <DefaultLoader className="text-hot-red h-6 w-6" />
         ) : (
           <>
             <ReferralsList />
-            <RefcodeLink />
+            {referralLink ? (
+              <RefcodeLink referralLink={referralLink} />
+            ) : (
+              <RefcodeCreator
+                accountEmail={accountEmail}
+                urlQueryEmail={urlQueryEmail}
+                createRefcode={createRefcode}
+                mutateRefcode={mutateRefcode}
+                setReferrerEmail={setReferrerEmail} />
+            )}
           </>
-        )
-        }
+        )}
       </div>
     </div >
   )

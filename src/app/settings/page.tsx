@@ -8,7 +8,7 @@ import { SettingsNav } from './layout'
 import { H1, H2, H3 } from '@/components/Text'
 import { GB, TB, filesize } from '@/lib'
 import DefaultLoader from '@/components/Loader'
-import { RefcodeLink, ReferralsList } from '../referrals/page'
+import { RefcodeLink, ReferralsList, RefcodeCreator } from '../referrals/page'
 import { useReferrals } from '@/lib/referrals/hooks'
 
 const Plans: Record<`did:${string}`, { name: string, limit: number }> = {
@@ -67,9 +67,10 @@ export default function SettingsPage (): JSX.Element {
   const allocated = Object.values(usage ?? {}).reduce((total, n) => total + n, 0)
   const limit = plan?.product ? Plans[plan.product]?.limit : 0
 
-  const { referrals } = useReferrals()
+  const { referrals, refcodeIsLoading, referralLink, referrerEmail, setReferrerEmail, accountEmail, urlQueryEmail, createRefcode, mutateRefcode, } = useReferrals()
+
   const referred = referrals?.length || 0
-  
+
   // TODO: need to calculate these from the referral information that gets added during the TBD cronjob
   const credits = 0
   const points = 0
@@ -94,7 +95,15 @@ export default function SettingsPage (): JSX.Element {
       </div>
       <div className='border border-hot-red rounded-2xl bg-white p-5 max-w-4xl mb-4'>
         <ReferralsList />
-        <RefcodeLink />
+        {referralLink ? (
+          <RefcodeLink referralLink={referralLink} />
+        ) : (
+          <RefcodeCreator
+            accountEmail={accountEmail}
+            urlQueryEmail={urlQueryEmail}
+            createRefcode={createRefcode}
+            mutateRefcode={mutateRefcode}
+            setReferrerEmail={setReferrerEmail} />)}
       </div>
       <div className='border border-hot-red rounded-2xl bg-white p-5 max-w-4xl'>
         <H2>Plan</H2>
