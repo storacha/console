@@ -25,7 +25,7 @@ export function RefcodeCreator () {
     <>
       {
         prefilledEmail ? (
-          <DefaultLoader />
+          <DefaultLoader className="w-6 h-6 color-hot-red"/>
         ) : (
           <form onSubmit={(e) => {
             e.preventDefault()
@@ -92,10 +92,9 @@ export function ReferralsList () {
     ) : (
       <>
         <H3>Earn Free Storage and Racha Points!</H3>
-        <p className='text-hot-red mb-4'>
+        <p className='text-hot-red mb-4 max-w-lg'>
           Turn your friends into Lite of Business Rachas and receive up to 16 months of Lite or
-          3 months of Business for free! You can also earn Racha Points. Here you can learn more
-          about the <a href="#TODONeedLink">details of the program</a>.
+          3 months of Business for free! You can also earn Racha Points.
         </p>
       </>
     )
