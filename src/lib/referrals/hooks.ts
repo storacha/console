@@ -33,11 +33,13 @@ export function useReferrals () {
   const { data: referralsResult, isLoading: referralsAreLoading } = useSWR<ReferralsResult>(refcode && `${REFERRALS_SERVICE}/referrals/${refcode}`, fetcher)
   const referrals = referralsResult?.referrals
   const referralLink = refcode && `${process.env.NEXT_PUBLIC_REFERRAL_URL}?refcode=${refcode}`
-  return {
+  const result = ({
     refcodeIsLoading, referralsAreLoading,
     referrerEmail, setReferrerEmail, urlQueryEmail, accountEmail, email,
     refcode, createRefcode, mutateRefcode, referrals, referralLink
-  }
+  })
+  console.log(result)
+  return result
 }
 
 export function useReferredBy () {
