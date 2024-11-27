@@ -71,8 +71,5 @@ export function useRecordRefcode () {
     })()
   }, [email, urlRefcode])
 
-  const { data: referredByResult, isLoading } = useSWR<RefcodeResult>(email && `/referrals/referredby/${encodeURIComponent(email)}`, fetcher)
-  const referredBy = referredByResult?.refcode
-
-  return { referredBy: referredBy || urlRefcode, isLoading }
+  return useReferredBy()
 }
