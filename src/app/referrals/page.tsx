@@ -111,7 +111,7 @@ export function ReferralsList () {
       <>
         <H3>Earn Free Storage and Racha Points!</H3>
         <p className='text-hot-red mb-4 max-w-lg'>
-          Turn your friends into Lite of Business Rachas and receive up to 16 months of Lite or
+          Turn your friends into Lite or Business Rachas and receive up to 16 months of Lite or
           3 months of Business for free! You can also earn Racha Points.
         </p>
       </>
