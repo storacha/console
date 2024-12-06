@@ -3,6 +3,7 @@
 import CopyButton from '@/components/CopyButton'
 import DefaultLoader from '@/components/Loader'
 import { H1, H3 } from '@/components/Text'
+import Tooltip from '@/components/Tooltip'
 import { RefcodeResult, useReferrals } from '@/lib/referrals/hooks'
 import { useEffect } from 'react'
 import { KeyedMutator } from 'swr'
@@ -101,7 +102,10 @@ export function ReferralsList () {
             referrals.map((referral, i) =>
               <div key={i} className="flex flex-row justify-between items-center py-4">
                 <div>Referred Racha</div>
-                <div className="rounded-full bg-hot-red-light text-hot-red px-4 py-2 font-mono text-sm">In Progress</div>
+                <Tooltip
+                  text={['Your referral was successful! You will receive your reward once the referred user has paid for the requisite period of time.']}>
+                  <div className="rounded-full bg-hot-red-light text-hot-red px-4 py-2 font-mono text-sm">In Progress</div>
+                </Tooltip>
               </div>
             )
           }
@@ -111,7 +115,7 @@ export function ReferralsList () {
       <>
         <H3>Earn Free Storage and Racha Points!</H3>
         <p className='text-hot-red mb-4 max-w-lg'>
-          Turn your friends into Lite or Business Rachas and receive up to 16 months of Lite or
+          Turn your friends into Lite or Business Rachas and receive up to 16 months of Lite and
           3 months of Business for free! You can also earn Racha Points.
         </p>
       </>
