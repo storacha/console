@@ -171,8 +171,8 @@ export function SpacePreview({ did, name, capabilities }: SpacePreviewProps) {
             <InformationCircleIcon className={`h-5 w-5 ml-2 space-preview-capability-icon`} />
             <Tooltip anchorSelect={`.space-preview-capability-icon`}>
               <H3>Capabilities</H3>
-              {capabilities.map(c => (
-                <p>{c}</p>
+              {capabilities.map((c, i) => (
+                <p key={i}>{c}</p>
               ))}
             </Tooltip>
           </span>

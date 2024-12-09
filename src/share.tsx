@@ -242,8 +242,8 @@ export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
                   <InformationCircleIcon className={`h-5 w-5 ml-1 share-capabilities-${i}`} />
                   <Tooltip anchorSelect={`.share-capabilities-${i}`}>
                     <H3>Capabilities</H3>
-                    {capabilities.map(c => (
-                      <p>{c}</p>
+                    {capabilities.map((c, j) => (
+                      <p key={j}>{c}</p>
                     ))}
                   </Tooltip>
                 </span>
