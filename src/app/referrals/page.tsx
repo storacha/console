@@ -2,7 +2,7 @@
 
 import CopyButton from '@/components/CopyButton'
 import DefaultLoader from '@/components/Loader'
-import { H1, H3 } from '@/components/Text'
+import { H1, H2, H3 } from '@/components/Text'
 import Tooltip from '@/components/Tooltip'
 import { RefcodeResult, useReferrals } from '@/lib/referrals/hooks'
 import { useEffect } from 'react'
@@ -91,7 +91,7 @@ export function ReferralsList () {
   return (
     (referrals && referrals.length > 0) ? (
       <>
-        <H3>Referrals</H3>
+        <H2>Referrals</H2>
         <div className="divide-solid divide-hot-red py-4">
           {
             /**
@@ -102,9 +102,9 @@ export function ReferralsList () {
             referrals.map((referral, i) =>
               <div key={i} className="flex flex-row justify-between items-center py-4">
                 <div>Referred Racha</div>
-                <Tooltip
-                  text={['Your referral was successful! You will receive your reward once the referred user has paid for the requisite period of time.']}>
-                  <div className="rounded-full bg-hot-red-light text-hot-red px-4 py-2 font-mono text-sm">In Progress</div>
+                <div className={`referral-${i} rounded-full bg-hot-red-light text-hot-red px-4 py-2 font-mono text-sm`}>In Progress</div>
+                <Tooltip anchorSelect={`.referral-${i}`} place="bottom-start">
+                  <p className="max-w-sm">Your referral was successful! You will receive your reward once the referred user has paid for the requisite period of time.</p>
                 </Tooltip>
               </div>
             )
@@ -128,7 +128,7 @@ export default function ReferralsPage () {
   return (
     <div className='p-10 bg-racha-fire/50 w-full h-screen'>
       <H1>Generate a Referral Code</H1>
-      <div className='border border-hot-red rounded-2xl bg-white p-5'>
+      <div className='border border-hot-red rounded-2xl bg-white p-5 max-w-2xl'>
         {refcodeIsLoading ? (
           <DefaultLoader className="text-hot-red h-6 w-6" />
         ) : (
