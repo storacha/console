@@ -11,7 +11,7 @@ module.exports = nextConfig
 // Injected content via Sentry wizard below
 
 const { withSentryConfig } = require("@sentry/nextjs");
-console.log("SENTRY AUTH", process.env.SENTRY_AUTH_TOKEN)
+
 module.exports = withSentryConfig(
   module.exports,
   {
