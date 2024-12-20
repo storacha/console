@@ -1,14 +1,17 @@
 import type { ChangeEvent } from 'react'
 
 import React, { useState } from 'react'
-import { Space, useW3 } from '@w3ui/react'
+import { ContentServeService, Space, useW3 } from '@w3ui/react'
 import Loader from '../components/Loader'
-import { DID, DIDKey } from '@ucanto/interface'
+import { ConnectionView, DID, DIDKey } from '@ucanto/interface'
 import { DidIcon } from './DidIcon'
 import Link from 'next/link'
 import { FolderPlusIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import Tooltip from './Tooltip'
 import { H3 } from './Text'
+import * as UcantoClient from '@ucanto/client'
+import { HTTP } from '@ucanto/transport'
+import * as CAR from '@ucanto/transport/car'
 
 export function SpaceCreatorCreating(): JSX.Element {
   return (
@@ -52,7 +55,21 @@ export function SpaceCreatorForm({
 
     setSubmitted(true)
     try {
-      const space = await client.createSpace(name)
+
+      const gatewayId = (process.env.NEXT_PUBLIC_W3UP_GATEWAY_ID || 'did:web:w3s.link') as DID<'web'>
+      const gatewayUrl = process.env.NEXT_PUBLIC_W3UP_GATEWAY_HOST || 'https://freeway.dag.haus' as string
+
+      const storachaGateway = UcantoClient.connect({
+        id: {
+          did: () => gatewayId
+        },
+        codec: CAR.outbound,
+        channel: HTTP.open({ url: new URL(gatewayUrl) }),
+      }) as ConnectionView<ContentServeService>
+
+      const space = await client.createSpace(name, {
+        authorizeGatewayServices: [storachaGateway]
+      })
 
       const provider = (process.env.NEXT_PUBLIC_W3UP_PROVIDER || 'did:web:web3.storage') as DID<'web'>
       const result = await account.provision(space.did(), { provider })
