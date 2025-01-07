@@ -60,7 +60,7 @@ export function SpaceCreatorForm({
     try {
 
       const gatewayId = toWebDID(process.env.NEXT_PUBLIC_W3UP_GATEWAY_ID) || toWebDID('did:web:w3s.link')
-      const gatewayUrl = process.env.NEXT_PUBLIC_W3UP_GATEWAY_HOST || 'https://freeway.dag.haus'
+      const gatewayUrl = process.env.NEXT_PUBLIC_W3UP_GATEWAY_HOST || 'https://w3s.link'
 
       const storachaGateway = UcantoClient.connect({
         id: {
