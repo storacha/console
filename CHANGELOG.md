@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.7](https://github.com/storacha/console/compare/w3console-v1.17.6...w3console-v1.17.7) (2025-01-14)
+
+
+### Bug Fixes
+
+* **staging:** gateway host ([05bd361](https://github.com/storacha/console/commit/05bd361019229d81706171d0af9a11c6808dcb06))
+
 ## [1.17.6](https://github.com/storacha/console/compare/w3console-v1.17.5...w3console-v1.17.6) (2025-01-13)
 
 
