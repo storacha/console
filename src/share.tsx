@@ -10,6 +10,7 @@ import Tooltip from './components/Tooltip'
 import { ArrowDownOnSquareStackIcon, CloudArrowDownIcon, PaperAirplaneIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import * as DIDMailTo from '@web3-storage/did-mailto'
 import { DID } from '@ucanto/core'
+import { logAndCaptureError } from './sentry'
 
 function Header(props: PropsWithChildren): JSX.Element {
   return (
@@ -115,7 +116,7 @@ export function ShareSpace({ spaceDID }: { spaceDID: SpaceDID }): JSX.Element {
       updateSharedEmails([next])
       setValue('')
     } catch (err) {
-      console.error(err)
+      logAndCaptureError(err)
     } finally {
       // Reset to the original space if it was different
       if (currentSpace && currentSpace !== spaceDID) {
@@ -271,14 +272,14 @@ export function ImportSpace() {
       }
       delegation = res.ok
     } catch (err) {
-      console.error(err)
+      logAndCaptureError(err)
       return
     }
     try {
       await client.addSpace(delegation)
       setProof(delegation)
     } catch (err) {
-      console.error(err)
+      logAndCaptureError(err)
     }
   }
 

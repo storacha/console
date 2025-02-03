@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { FolderPlusIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import Tooltip from './Tooltip'
 import { H3 } from './Text'
+import { logAndCaptureError } from '@/sentry'
 
 export function SpaceCreatorCreating(): JSX.Element {
   return (
@@ -79,7 +80,7 @@ export function SpaceCreatorForm({
       resetForm()
     } catch (error) {
       /* eslint-disable-next-line no-console */
-      console.error(error)
+      logAndCaptureError(error)
       throw new Error('failed to create space', { cause: error })
     }
   }
