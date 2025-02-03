@@ -12,7 +12,7 @@ import {
   WrapInDirectoryCheckbox,
   useUploader
 } from '@w3ui/react'
-import { gatewayHost } from '../components/services'
+import { ipfsGatewayURL } from '../components/services'
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { H2 } from './Text'
@@ -95,7 +95,7 @@ export const Done = ({ dataCID }: DoneProps): JSX.Element => {
       <H2>Uploaded</H2>
       <a
         className='font-mono text-xs max-w-full overflow-hidden no-wrap text-ellipsis'
-        href={`https://${cid}.ipfs.${gatewayHost}/`}
+        href={ipfsGatewayURL(cid)}
       >
         {cid}
       </a>

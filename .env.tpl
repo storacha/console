@@ -3,6 +3,11 @@ NEXT_PUBLIC_W3UP_SERVICE_URL=https://staging.up.web3.storage
 NEXT_PUBLIC_W3UP_RECEIPTS_URL=https://staging.up.web3.storage/receipt/
 NEXT_PUBLIC_W3UP_SERVICE_DID=did:web:staging.web3.storage
 NEXT_PUBLIC_W3UP_PROVIDER=did:web:staging.web3.storage
+NEXT_PUBLIC_IPFS_GATEWAY_URL=https://%ROOT_CID%.ipfs-staging.w3s.link
+
+# set these to your gateway service URL and DID 
+NEXT_PUBLIC_W3UP_GATEWAY_HOST=https://staging.w3s.link
+NEXT_PUBLIC_W3UP_GATEWAY_ID=did:web:staging.w3s.link
 
 # set these to values from Stripe settings
 NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID=prctbl_1OCeiEF6A5ufQX5vPFlWRkPm
