@@ -64,6 +64,8 @@ export const Uploading = ({
 )
 
 export const Errored = ({ error }: { error: any }): JSX.Element => {
+  const [, { setFile }] = useUploader()
+
   useEffect(() => {
     if (error != null) {
       // eslint-disable-next-line no-console
@@ -77,6 +79,16 @@ export const Errored = ({ error }: { error: any }): JSX.Element => {
         ⚠️ Error: failed to upload file: {error.message}
       </h1>
       <p>Check the browser console for details.</p>
+      <div className='my-4'>
+      <button
+          className='inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap'
+          onClick={() => {
+            setFile(undefined)
+          }}
+        >
+          Reset uploading file
+        </button>
+      </div>
     </div>)
   );
 }
