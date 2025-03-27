@@ -12,10 +12,11 @@ import {
   WrapInDirectoryCheckbox,
   useUploader
 } from '@w3ui/react'
-import { gatewayHost } from '../components/services'
+import { ipfsGatewayURL } from '../components/services'
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { H2 } from './Text'
+import { logAndCaptureError } from '@/sentry'
 
 function StatusLoader ({ progressStatus }: { progressStatus: ProgressStatus }) {
   const { total, loaded, lengthComputable } = progressStatus
@@ -68,7 +69,7 @@ export const Errored = ({ error }: { error: any }): JSX.Element => {
   useEffect(() => {
     if (error != null) {
       // eslint-disable-next-line no-console
-      console.error('Uploader Error:', error)
+      logAndCaptureError(new Error('Uploader Error:', { cause: error }))
     }
   }, [error])
 
@@ -106,7 +107,7 @@ export const Done = ({ dataCID }: DoneProps): JSX.Element => {
       <H2>Uploaded</H2>
       <a
         className='font-mono text-xs max-w-full overflow-hidden no-wrap text-ellipsis'
-        href={`https://${cid}.ipfs.${gatewayHost}/`}
+        href={ipfsGatewayURL(cid)}
       >
         {cid}
       </a>
@@ -268,7 +269,7 @@ const UploaderContents = (): JSX.Element => {
           </div>
           <div className='p-4'>
             <button type='submit' className='inline-block bg-hot-red border border-hot-red hover:bg-white hover:text-hot-red font-epilogue text-white uppercase text-sm px-6 py-2 rounded-full whitespace-nowrap' disabled={file === undefined}>
-              <CloudArrowUpIcon className='h-5 w-5 inline-block mr-1 align-middle' style={{marginTop: -4}} /> Start Upload
+              <CloudArrowUpIcon className='h-5 w-5 inline-block mr-1 align-middle' style={{ marginTop: -4 }} /> Start Upload
             </button>
           </div>
         </>

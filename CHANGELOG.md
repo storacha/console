@@ -1,5 +1,109 @@
 # Changelog
 
+## [1.17.7](https://github.com/storacha/console/compare/w3console-v1.17.6...w3console-v1.17.7) (2025-03-14)
+
+
+### Bug Fixes
+
+* capture some errors we were logging to console ([#188](https://github.com/storacha/console/issues/188)) ([397c94b](https://github.com/storacha/console/commit/397c94b4f99e6351f50669a9ce6d44ded007d04a))
+* **prod:** update gateway host ([#190](https://github.com/storacha/console/issues/190)) ([3624bd1](https://github.com/storacha/console/commit/3624bd1591414d296feedc919d5aea47844a4aef))
+* **staging:** gateway host ([05bd361](https://github.com/storacha/console/commit/05bd361019229d81706171d0af9a11c6808dcb06))
+* typo on space page ([#187](https://github.com/storacha/console/issues/187)) ([539f948](https://github.com/storacha/console/commit/539f948f332c29c931458fd00b4ad41d5106f8d6))
+
+## [1.17.6](https://github.com/storacha/console/compare/w3console-v1.17.5...w3console-v1.17.6) (2025-01-13)
+
+
+### Bug Fixes
+
+* using the correct gateway host ([#183](https://github.com/storacha/console/issues/183)) ([3febe4a](https://github.com/storacha/console/commit/3febe4a0546a573bbe98a57d3946254b00b210ce))
+
+## [1.17.5](https://github.com/storacha/console/compare/w3console-v1.17.4...w3console-v1.17.5) (2025-01-10)
+
+
+### Other Changes
+
+* trigger deployment ([734d070](https://github.com/storacha/console/commit/734d0709bd124a777cecf0c364050c59e2e1ce5b))
+
+## [1.17.4](https://github.com/storacha/console/compare/w3console-v1.17.3...w3console-v1.17.4) (2025-01-10)
+
+
+### Bug Fixes
+
+* **prod:** gateway host ([#180](https://github.com/storacha/console/issues/180)) ([4191439](https://github.com/storacha/console/commit/4191439921ef6c8383451344eddadbcd4e50c1fb))
+
+## [1.17.3](https://github.com/storacha/console/compare/w3console-v1.17.2...w3console-v1.17.3) (2025-01-09)
+
+
+### Bug Fixes
+
+* cors preflight issue in production ([#178](https://github.com/storacha/console/issues/178)) ([1b1b79a](https://github.com/storacha/console/commit/1b1b79ad68a7654d84d8dd3f8ed48afa92d5808a))
+
+## [1.17.2](https://github.com/storacha/console/compare/w3console-v1.17.1...w3console-v1.17.2) (2025-01-09)
+
+
+### Bug Fixes
+
+* create space ([#173](https://github.com/storacha/console/issues/173)) ([597240f](https://github.com/storacha/console/commit/597240f5d843884b656a09a7a5d28780c5c63f68))
+* create space using the latest w3up-client version ([#171](https://github.com/storacha/console/issues/171)) ([600766b](https://github.com/storacha/console/commit/600766b7046b83602c56bbde8ba841eb8920bdc1))
+* **createSpace:** using the latest w3ui with w3up-client ([#176](https://github.com/storacha/console/issues/176)) ([5194dd2](https://github.com/storacha/console/commit/5194dd270f2a53bdf3a25e5aff6623204f7b225e))
+* gateway authorization based on env ([#174](https://github.com/storacha/console/issues/174)) ([0eb122d](https://github.com/storacha/console/commit/0eb122de6923b9abd8a67334f90f5ebc9fb17f4a))
+* set ipfs gateway url based on env var ([#177](https://github.com/storacha/console/issues/177)) ([1defed6](https://github.com/storacha/console/commit/1defed682adfc52d464bcff1edf52fc100edf908))
+
+## [1.17.1](https://github.com/storacha/console/compare/w3console-v1.17.0...w3console-v1.17.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* add sentry auth token to enable sourcemap upload ([#168](https://github.com/storacha/console/issues/168)) ([a48c8c4](https://github.com/storacha/console/commit/a48c8c42cbd0dbba7902691f839aebac0b4a04b6))
+
+## [1.17.0](https://github.com/storacha/console/compare/w3console-v1.16.2...w3console-v1.17.0) (2024-12-18)
+
+
+### Features
+
+* add Sentry error tracking ([#165](https://github.com/storacha/console/issues/165)) ([3e7069a](https://github.com/storacha/console/commit/3e7069ad215481269e4bc7c72ad5903ad25eac16))
+
+
+### Bug Fixes
+
+* use the same Sentry project for different envs ([#167](https://github.com/storacha/console/issues/167)) ([32dd6f8](https://github.com/storacha/console/commit/32dd6f82dd8a9db696513d0c22f27e1cfa33a7b7))
+
+## [1.16.2](https://github.com/storacha/console/compare/w3console-v1.16.1...w3console-v1.16.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* remove referrals feature flag ([#161](https://github.com/storacha/console/issues/161)) ([d504602](https://github.com/storacha/console/commit/d50460297983d6fb097721244963fd77aaf68fd1))
+
+## [1.16.1](https://github.com/storacha/console/compare/w3console-v1.16.0...w3console-v1.16.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* make it possible to skip the plan gate after Stripe checkout ([#162](https://github.com/storacha/console/issues/162)) ([b399b37](https://github.com/storacha/console/commit/b399b372ddbcf850135263a7c7b31b88a4b42256))
+* tweak plan gate query param ([#163](https://github.com/storacha/console/issues/163)) ([0ce071e](https://github.com/storacha/console/commit/0ce071e9805d7b99bd98bb65262b2fe1b2e6e1b6))
+
+
+### Other Changes
+
+* update copy ([#159](https://github.com/storacha/console/issues/159)) ([0253b05](https://github.com/storacha/console/commit/0253b059d6e70f0ef5b83f82e722fc35b66f35d0))
+
+## [1.16.0](https://github.com/storacha/console/compare/w3console-v1.15.2...w3console-v1.16.0) (2024-12-09)
+
+
+### Features
+
+* add a PNG version of our logo ([#153](https://github.com/storacha/console/issues/153)) ([2812b27](https://github.com/storacha/console/commit/2812b27a5d2b3b1f12175e2e465784f5a9716186))
+* point staging env referral link at staging marketing site ([3937048](https://github.com/storacha/console/commit/39370485ee11a1c9ffaa6edd10a5beb2ef76a66c))
+* prototype of referral system in console ([#142](https://github.com/storacha/console/issues/142)) ([6f760fe](https://github.com/storacha/console/commit/6f760fe519b2c4456b22a2ccddda57b5c2b979b5))
+* referrals tweaks ([#155](https://github.com/storacha/console/issues/155)) ([7e58678](https://github.com/storacha/console/commit/7e586788ad774e3f1e3468db13ea393ffd096493))
+* update TOS links to point to the Storacha docs ([#148](https://github.com/storacha/console/issues/148)) ([68d09b5](https://github.com/storacha/console/commit/68d09b57832d621c34916f0c127ef5c6c9553cf0))
+
+
+### Bug Fixes
+
+* use the correct referral URL ([#149](https://github.com/storacha/console/issues/149)) ([bc29a2b](https://github.com/storacha/console/commit/bc29a2bcd60b9b45ae0e4ea417b3e6db1b27fc36))
+
 ## [1.15.2](https://github.com/storacha/console/compare/w3console-v1.15.1...w3console-v1.15.2) (2024-11-25)
 
 

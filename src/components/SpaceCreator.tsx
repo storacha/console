@@ -1,13 +1,19 @@
 import type { ChangeEvent } from 'react'
 
 import React, { useState } from 'react'
-import { Space, useW3 } from '@w3ui/react'
+import { ContentServeService, Space, useW3 } from '@w3ui/react'
 import Loader from '../components/Loader'
-import { DID, DIDKey } from '@ucanto/interface'
+import { DIDKey } from '@ucanto/interface'
 import { DidIcon } from './DidIcon'
 import Link from 'next/link'
 import { FolderPlusIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import Tooltip from './Tooltip'
+import { H3 } from './Text'
+import * as UcantoClient from '@ucanto/client'
+import { HTTP } from '@ucanto/transport'
+import * as CAR from '@ucanto/transport/car'
+import { gatewayHost } from './services'
+import { logAndCaptureError } from '@/sentry'
 
 export function SpaceCreatorCreating(): JSX.Element {
   return (
@@ -49,11 +55,27 @@ export function SpaceCreatorForm({
       throw new Error('a payment plan is required on account to provision a new space.')
     }
 
+    const toWebDID = (input?: string) =>
+      UcantoClient.Schema.DID.match({ method: 'web' }).from(input)
+
     setSubmitted(true)
     try {
-      const space = await client.createSpace(name)
 
-      const provider = (process.env.NEXT_PUBLIC_W3UP_PROVIDER || 'did:web:web3.storage') as DID<'web'>
+      const gatewayId = toWebDID(process.env.NEXT_PUBLIC_W3UP_GATEWAY_ID) ?? toWebDID('did:web:w3s.link')
+
+      const storachaGateway = UcantoClient.connect({
+        id: {
+          did: () => gatewayId
+        },
+        codec: CAR.outbound,
+        channel: HTTP.open<ContentServeService>({ url: new URL(gatewayHost) }),
+      })
+
+      const space = await client.createSpace(name, {
+        authorizeGatewayServices: [storachaGateway]
+      })
+
+      const provider = toWebDID(process.env.NEXT_PUBLIC_W3UP_PROVIDER) || toWebDID('did:web:web3.storage')
       const result = await account.provision(space.did(), { provider })
       if (result.error) {
         setSubmitted(false)
@@ -78,7 +100,7 @@ export function SpaceCreatorForm({
       resetForm()
     } catch (error) {
       /* eslint-disable-next-line no-console */
-      console.error(error)
+      logAndCaptureError(error)
       throw new Error('failed to create space', { cause: error })
     }
   }
@@ -167,8 +189,12 @@ export function SpacePreview({ did, name, capabilities }: SpacePreviewProps) {
         <Link href={`/space/${did}`} className='block'>
           <span className='font-epilogue text-lg text-hot-red font-semibold leading-5 m-0 flex items-center'>
             {name ?? 'Untitled'}
-            <Tooltip title="Capabilities" text={capabilities}>
-              <InformationCircleIcon className='h-5 w-5 ml-2' />
+            <InformationCircleIcon className={`h-5 w-5 ml-2 space-preview-capability-icon`} />
+            <Tooltip anchorSelect={`.space-preview-capability-icon`}>
+              <H3>Capabilities</H3>
+              {capabilities.map((c, i) => (
+                <p key={i}>{c}</p>
+              ))}
             </Tooltip>
           </span>
           <span className='block font-mono text-xs truncate'>

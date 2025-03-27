@@ -7,6 +7,8 @@ import {
 import { Logo } from '../brand'
 import { TopLevelLoader } from './Loader'
 
+import { useRecordRefcode } from '@/lib/referrals/hooks'
+
 export function AuthenticationForm (): JSX.Element {
   const [{ submitted }] = useAuthenticator()
   return (
@@ -30,7 +32,7 @@ export function AuthenticationForm (): JSX.Element {
         </div>
       </AuthCore.Form>
       <p className='text-xs text-black/80 italic max-w-xs text-center mt-6'>
-        By registering with storacha.network, you agree to the storacha.network <a className='underline' href='https://web3.storage/docs/terms/'>Terms of Service</a>.
+        By registering with storacha.network, you agree to the storacha.network <a className='underline' href='https://docs.storacha.network/terms/'>Terms of Service</a>.
       </p>
     </div>
   )
@@ -38,6 +40,12 @@ export function AuthenticationForm (): JSX.Element {
 
 export function AuthenticationSubmitted (): JSX.Element {
   const [{ email }] = useAuthenticator()
+
+  // ensure the referral of this user is tracked if necessary.
+  // we might use the result of this hook in the future to tell
+  // people that they get special pricing on the next page after
+  // they verify their email.
+  useRecordRefcode()
 
   return (
     <div className='authenticator'>

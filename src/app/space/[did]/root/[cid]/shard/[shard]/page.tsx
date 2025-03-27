@@ -2,12 +2,12 @@
 
 import { CAR } from '@ucanto/transport'
 import { H2 } from '@/components/Text'
-import { useW3, FilecoinInfoSuccess, BlobGetSuccess, CARLink } from '@w3ui/react'
+import { useW3, FilecoinInfoSuccess, CARLink } from '@w3ui/react'
 import useSWR from 'swr'
 import { Link, parse as parseLink } from 'multiformats/link'
 import DefaultLoader from '@/components/Loader'
 import * as Claims from '@web3-storage/content-claims/client'
-import { Aggregate, MerkleTreeNode, Piece, PieceLink, PieceView, Proof, ProofData } from '@web3-storage/data-segment'
+import { Aggregate, Piece, PieceLink, PieceView, Proof, ProofData } from '@web3-storage/data-segment'
 import CopyIcon from '@/components/CopyIcon'
 import { EqualsClaim } from '@web3-storage/content-claims/client/api'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
@@ -18,6 +18,7 @@ import ExpandIcon from '@/components/ExpandIcon'
 import { useState } from 'react'
 import AggregateIcon from '@/components/AggregateIcon'
 import PieceIcon from '@/components/PieceIcon'
+import { logAndCaptureError } from '@/sentry'
 
 type ProofStyle = 'mini'|'midi'|'maxi'
 
@@ -67,20 +68,20 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
         }
       }
     },
-    onError: err => console.error(err.message, err.cause)
+    onError: logAndCaptureError
   })
 
   const claimKey = `/assert/equals?content=${shard}`
   const claim = useSWR<EqualsClaim|undefined>(claimKey, {
     fetcher: async () => {
-      const claims = await Claims.read(shard)
+      const claims = await Claims.read(shard.multihash)
       for (const claim of claims) {
         if (claim.type === 'assert/equals' && isPieceLink(claim.equals)) {
           return claim
         }
       }
     },
-    onError: err => console.error(err.message, err.cause)
+    onError: logAndCaptureError
   })
 
   const filecoinInfoKey = `/filecoin/info?piece=${claim.data?.equals}`
@@ -99,7 +100,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
 
       return out.ok
     },
-    onError: err => console.error(err.message, err.cause)
+    onError: logAndCaptureError
   })
 
   const [proofStyle, setProofStyle] = useState<ProofStyle>('mini')

@@ -13,6 +13,8 @@ import CopyIcon from '@/components/CopyIcon'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { useRouter } from 'next/navigation'
 import { createUploadsListKey } from '@/cache'
+import { logAndCaptureError } from '@/sentry'
+import { ipfsGatewayURL } from '@/components/services'
 
 interface PageProps {
   params: {
@@ -38,7 +40,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
 
       return await client.capability.upload.get(root)
     },
-    onError: err => console.error(err.message, err.cause)
+    onError: logAndCaptureError
   })
 
   const [isRemoveConfirmModalOpen, setRemoveConfirmModalOpen] = useState(false)
@@ -58,7 +60,7 @@ export default function ItemPage ({ params }: PageProps): JSX.Element {
     router.replace(`/space/${spaceDID}`)
   }
 
-  const url = `https://${root}.ipfs.w3s.link`
+  const url = ipfsGatewayURL(root)
   return (
     <div>
       <Breadcrumbs space={space.did()} root={root} />
