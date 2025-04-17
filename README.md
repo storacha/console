@@ -1,3 +1,12 @@
+
+☣️ ☣️ ☣️ This repository has been archived as of 4/17/2025 ☣️ ☣️ ☣️
+
+If you'd like to contribute to Storacha's web console, please find it in its new home:
+
+https://github.com/storacha/upload-service/tree/main/packages/console 
+
+---
+
 # Console
 
 > Your dashboard for storacha.network
