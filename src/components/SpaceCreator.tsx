@@ -6,6 +6,7 @@ import Loader from '../components/Loader'
 import { DID, DIDKey } from '@ucanto/interface'
 import { DidIcon } from './DidIcon'
 import Link from 'next/link'
+import { usePlausible } from 'next-plausible'
 
 export function SpaceCreatorCreating (): JSX.Element {
   return (
@@ -28,6 +29,7 @@ export function SpaceCreatorForm ({
   const [created, setCreated] = useState(false)
   const [name, setName] = useState('')
   const [space, setSpace] = useState<Space>()
+  const plausible = usePlausible()
 
   function resetForm (): void {
     setName('')
@@ -73,10 +75,12 @@ export function SpaceCreatorForm ({
 
       setSpace(client.spaces().find(s => s.did() === space.did()))
       setCreated(true)
+      plausible('Space Created')
       resetForm()
     } catch (error) {
       /* eslint-disable-next-line no-console */
       console.error(error)
+      plausible('Failed Space Creation')
       throw new Error('failed to create space', { cause: error })
     }
   }
