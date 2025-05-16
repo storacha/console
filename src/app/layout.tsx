@@ -19,11 +19,11 @@ export default function RootLayout ({
     <html lang="en">
       <body className='bg-grad min-h-screen'>
       <PlausibleProvider
-          domain='console.storacha.local'
+          domain='console.web3.storage'
           trackFileDownloads={true}
           trackOutboundLinks={true}
           taggedEvents={true}
-          trackLocalhost={true}
+          trackLocalhost={false}
           enabled={true}
         >
           <Provider>
