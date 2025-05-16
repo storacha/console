@@ -10,6 +10,7 @@ import * as NFTStorageMigrator from '@/lib/migrations/nft-storage'
 import * as Web3StorageMigrator from '@/lib/migrations/web3-storage'
 import { DidIcon } from '@/components/DidIcon'
 import { MigrationConfiguration, MigrationSource } from '@/lib/migrations/api'
+import { usePlausible } from 'next-plausible'
 
 interface WizardProps {
   config: Partial<MigrationConfiguration>
@@ -168,12 +169,18 @@ function ChooseTargetSpace ({ config, onNext, onPrev }: WizardProps) {
 }
 
 function Confirmation ({ config, onNext, onPrev }: WizardProps) {
+  const plausible = usePlausible()
   const [{ spaces }] = useW3()
   const space = spaces.find(s => s.did() === config.space)
   if (!space) return
 
   const handleNextClick: MouseEventHandler = async e => {
     e.preventDefault()
+    plausible('Migration Started', {
+      props: {
+        source: config.source
+      }
+    })
     onNext(config)
   }
   return (
